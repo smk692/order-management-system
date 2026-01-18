@@ -1,0 +1,21 @@
+{
+  "order": {
+    "NEW": "신규주문",
+    "PAYMENT_PENDING": "결제대기",
+    "PAID": "결제완료",
+    "PREPARING": "상품준비중",
+    "READY_TO_SHIP": "출고대기",
+    "SHIPPED": "출고완료",
+    "IN_DELIVERY": "배송중",
+    "DELIVERED": "배송완료",
+    "CANCELLED": "주문취소",
+    "EXCHANGE_REQUESTED": "교환요청",
+    "RETURN_REQUESTED": "반품요청"
+  },
+  "stock": {
+    "NORMAL": "정상",
+    "LOW": "부족",
+    "OUT_OF_STOCK": "품절",
+    "OVERSTOCK": "과잉"
+  }
+}

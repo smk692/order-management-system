@@ -1,0 +1,26 @@
+{
+  "navigation": {
+    "dashboard": "대시보드",
+    "orders": "주문 관리",
+    "products": "상품 마스터",
+    "inventory": "재고 관리",
+    "shipping": "배송 관리",
+    "claims": "클레임/반품",
+    "settlement": "정산 관리",
+    "automation": "자동화 엔진",
+    "interfaces": "인터페이스",
+    "i18n": "전략 센터",
+    "mapping": "채널-창고 매핑",
+    "product_mapping": "상품-채널 매핑",
+    "settings": "시스템 설정"
+  },
+  "menu_groups": {
+    "operational_group": "운영 지휘소",
+    "strategy_group": "전략 및 지능",
+    "admin_group": "시스템 관리"
+  },
+  "common": {
+    "all_channels": "전체 채널",
+    "search_placeholder": "통합 검색 (Cmd+K)"
+  }
+}

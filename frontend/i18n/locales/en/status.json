@@ -1,0 +1,21 @@
+{
+  "order": {
+    "NEW": "New Order",
+    "PAYMENT_PENDING": "Payment Pending",
+    "PAID": "Paid",
+    "PREPARING": "Preparing",
+    "READY_TO_SHIP": "Ready to Ship",
+    "SHIPPED": "Shipped",
+    "IN_DELIVERY": "In Delivery",
+    "DELIVERED": "Delivered",
+    "CANCELLED": "Cancelled",
+    "EXCHANGE_REQUESTED": "Exchange Requested",
+    "RETURN_REQUESTED": "Return Requested"
+  },
+  "stock": {
+    "NORMAL": "Normal",
+    "LOW": "Low",
+    "OUT_OF_STOCK": "Out of Stock",
+    "OVERSTOCK": "Overstock"
+  }
+}

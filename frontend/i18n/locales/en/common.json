@@ -1,0 +1,26 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "orders": "Orders",
+    "products": "Product Master",
+    "inventory": "Inventory",
+    "shipping": "Shipping",
+    "claims": "Claims",
+    "settlement": "Settlement",
+    "automation": "Automation",
+    "interfaces": "Interfaces",
+    "i18n": "Strategy Center",
+    "mapping": "Channel Mapping",
+    "product_mapping": "Product-Channel Map",
+    "settings": "Settings"
+  },
+  "menu_groups": {
+    "operational_group": "Operations",
+    "strategy_group": "Strategy & Intelligence",
+    "admin_group": "Administration"
+  },
+  "common": {
+    "all_channels": "All Channels",
+    "search_placeholder": "Global Search (Cmd+K)"
+  }
+}
