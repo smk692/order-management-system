@@ -1,0 +1,92 @@
+# Development docker-compose: Infrastructure only
+# Use this when running backend/frontend locally
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up -d
+#
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: oms-mysql-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: oms
+      MYSQL_USER: oms
+      MYSQL_PASSWORD: oms_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:7.0
+    container_name: oms-mongodb-dev
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: oms
+      MONGO_INITDB_ROOT_PASSWORD: oms_password
+      MONGO_INITDB_DATABASE: oms
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_dev_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: oms-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Optional: Adminer for MySQL management
+  adminer:
+    image: adminer:latest
+    container_name: oms-adminer-dev
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
+
+  # Optional: Mongo Express for MongoDB management
+  mongo-express:
+    image: mongo-express:latest
+    container_name: oms-mongo-express-dev
+    restart: unless-stopped
+    ports:
+      - "8082:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: oms
+      ME_CONFIG_MONGODB_ADMINPASSWORD: oms_password
+      ME_CONFIG_MONGODB_URL: mongodb://oms:oms_password@mongodb:27017/
+      ME_CONFIG_BASICAUTH: "false"
+    depends_on:
+      - mongodb
+
+volumes:
+  mysql_dev_data:
+  mongodb_dev_data:
+  redis_dev_data:

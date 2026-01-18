@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Logs
+*.log
+logs/
+
+# Local configuration
+.env
+.env.local
+.env.*.local
+
+# Test
+coverage/
+
+# Misc
+.DS_Store
+Thumbs.db
