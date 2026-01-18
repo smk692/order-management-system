@@ -1,0 +1,7 @@
+{
+  "name": "Global OMS - Enterprise Order Management System",
+  "description": "A comprehensive, world-class Order Management System featuring multi-channel integration, real-time inventory tracking, international shipping management, and AI-powered insights.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
