@@ -77,7 +77,7 @@ const App: React.FC = () => {
     { id: 'WH-004', name: '인천 항공 센터', region: 'Global', type: 'AIR', capacity: 30 },
   ]);
 
-  const t = (key: string) => TRANSLATIONS[lang][key] || key;
+  const t = (key: string) => (TRANSLATIONS[lang] as unknown as Record<string, string>)[key] || key;
 
   const renderContent = () => {
     switch (activeTab) {

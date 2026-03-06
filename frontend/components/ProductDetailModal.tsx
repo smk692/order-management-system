@@ -352,12 +352,12 @@ const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ isOpen, onClose
                 </div>
                 <div className="p-8 space-y-8">
                    <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-                      <ToggleField label="유통기한 관리" value={productData.logistics?.shelfLife} fieldName="logistics_shelfLife" isEditing={isEditing} onChange={(f, v) => setProductData((p: any) => ({ ...p, logistics: { ...p.logistics, shelfLife: v } }))} />
+                      <ToggleField label="유통기한 관리" value={productData.logistics?.shelfLife} fieldName="logistics_shelfLife" isEditing={isEditing} onChange={(_f: string, v: boolean) => setProductData((p: any) => ({ ...p, logistics: { ...p.logistics, shelfLife: v } }))} />
                    </div>
                    <div className="grid grid-cols-4 gap-6 px-3">
-                      <InfoField label="유통기한 (일)" value={productData.logistics?.expDays} fieldName="logistics_expDays" isEditing={isEditing} onChange={(f, v) => setProductData((p: any) => ({ ...p, logistics: { ...p.logistics, expDays: v } }))} />
-                      <InfoField label="입고 제한 (일)" value={productData.logistics?.inboundDays} fieldName="logistics_inboundDays" isEditing={isEditing} onChange={(f, v) => setProductData((p: any) => ({ ...p, logistics: { ...p.logistics, inboundDays: v } }))} />
-                      <InfoField label="유통 경고 (일)" value={productData.logistics?.warningDays} fieldName="logistics_warningDays" isEditing={isEditing} onChange={(f, v) => setProductData((p: any) => ({ ...p, logistics: { ...p.logistics, warningDays: v } }))} />
+                      <InfoField label="유통기한 (일)" value={productData.logistics?.expDays} fieldName="logistics_expDays" isEditing={isEditing} onChange={(_f: string, v: string) => setProductData((p: any) => ({ ...p, logistics: { ...p.logistics, expDays: v } }))} />
+                      <InfoField label="입고 제한 (일)" value={productData.logistics?.inboundDays} fieldName="logistics_inboundDays" isEditing={isEditing} onChange={(_f: string, v: string) => setProductData((p: any) => ({ ...p, logistics: { ...p.logistics, inboundDays: v } }))} />
+                      <InfoField label="유통 경고 (일)" value={productData.logistics?.warningDays} fieldName="logistics_warningDays" isEditing={isEditing} onChange={(_f: string, v: string) => setProductData((p: any) => ({ ...p, logistics: { ...p.logistics, warningDays: v } }))} />
                    </div>
                 </div>
                </section>

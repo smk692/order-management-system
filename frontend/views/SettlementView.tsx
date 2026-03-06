@@ -75,7 +75,7 @@ const SettlementView: React.FC = () => {
           <div className="h-80 w-full min-h-[320px]">
             <ResponsiveContainer width="100%" height="100%" minHeight={320}>
               <BarChart data={data} onClick={(state) => {
-                if (state?.activeLabel) setSelectedChannelId(state.activeLabel);
+                if (state?.activeLabel) setSelectedChannelId(String(state.activeLabel));
               }}>
                 <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#94a3b8', fontWeight: 700}} dy={10} />
