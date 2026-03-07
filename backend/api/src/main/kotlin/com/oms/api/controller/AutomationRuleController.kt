@@ -16,14 +16,15 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api/v1/automation/rules")
 class AutomationRuleController(
-    private val automationRuleService: AutomationRuleService
+    private val automationRuleService: AutomationRuleService,
 ) {
-
     /**
      * Create a new automation rule
      */
     @PostMapping
-    fun createRule(@RequestBody command: CreateRuleCommand): ResponseEntity<AutomationRuleResult> {
+    fun createRule(
+        @RequestBody command: CreateRuleCommand,
+    ): ResponseEntity<AutomationRuleResult> {
         val result = automationRuleService.createRule(command)
         return ResponseEntity.status(HttpStatus.CREATED).body(result)
     }
@@ -32,7 +33,9 @@ class AutomationRuleController(
      * Get rule by ID
      */
     @GetMapping("/{id}")
-    fun getRule(@PathVariable id: String): ResponseEntity<AutomationRuleResult> {
+    fun getRule(
+        @PathVariable id: String,
+    ): ResponseEntity<AutomationRuleResult> {
         val result = automationRuleService.getRule(UUID.fromString(id))
         return ResponseEntity.ok(result)
     }
@@ -41,7 +44,9 @@ class AutomationRuleController(
      * Get all rules for a company
      */
     @GetMapping("/company/{companyId}")
-    fun getRulesByCompany(@PathVariable companyId: String): ResponseEntity<List<AutomationRuleResult>> {
+    fun getRulesByCompany(
+        @PathVariable companyId: String,
+    ): ResponseEntity<List<AutomationRuleResult>> {
         val result = automationRuleService.getRulesByCompany(UUID.fromString(companyId))
         return ResponseEntity.ok(result)
     }
@@ -52,7 +57,7 @@ class AutomationRuleController(
     @GetMapping("/company/{companyId}/trigger/{triggerType}")
     fun getRulesByTrigger(
         @PathVariable companyId: String,
-        @PathVariable triggerType: TriggerType
+        @PathVariable triggerType: TriggerType,
     ): ResponseEntity<List<AutomationRuleResult>> {
         val result = automationRuleService.getActiveRulesByTrigger(UUID.fromString(companyId), triggerType)
         return ResponseEntity.ok(result)
@@ -64,7 +69,7 @@ class AutomationRuleController(
     @PutMapping("/{id}")
     fun updateRule(
         @PathVariable id: String,
-        @RequestBody command: UpdateRuleCommand
+        @RequestBody command: UpdateRuleCommand,
     ): ResponseEntity<AutomationRuleResult> {
         val result = automationRuleService.updateRule(UUID.fromString(id), command)
         return ResponseEntity.ok(result)
@@ -74,7 +79,9 @@ class AutomationRuleController(
      * Enable a rule
      */
     @PostMapping("/{id}/enable")
-    fun enableRule(@PathVariable id: String): ResponseEntity<AutomationRuleResult> {
+    fun enableRule(
+        @PathVariable id: String,
+    ): ResponseEntity<AutomationRuleResult> {
         val result = automationRuleService.enableRule(UUID.fromString(id))
         return ResponseEntity.ok(result)
     }
@@ -83,7 +90,9 @@ class AutomationRuleController(
      * Disable a rule
      */
     @PostMapping("/{id}/disable")
-    fun disableRule(@PathVariable id: String): ResponseEntity<AutomationRuleResult> {
+    fun disableRule(
+        @PathVariable id: String,
+    ): ResponseEntity<AutomationRuleResult> {
         val result = automationRuleService.disableRule(UUID.fromString(id))
         return ResponseEntity.ok(result)
     }
@@ -92,7 +101,9 @@ class AutomationRuleController(
      * Delete a rule
      */
     @DeleteMapping("/{id}")
-    fun deleteRule(@PathVariable id: String): ResponseEntity<Void> {
+    fun deleteRule(
+        @PathVariable id: String,
+    ): ResponseEntity<Void> {
         automationRuleService.deleteRule(UUID.fromString(id))
         return ResponseEntity.noContent().build()
     }
@@ -101,7 +112,9 @@ class AutomationRuleController(
      * Record rule execution (typically called by internal automation engine)
      */
     @PostMapping("/{id}/execute")
-    fun recordExecution(@PathVariable id: String): ResponseEntity<AutomationRuleResult> {
+    fun recordExecution(
+        @PathVariable id: String,
+    ): ResponseEntity<AutomationRuleResult> {
         val result = automationRuleService.recordRuleExecution(UUID.fromString(id))
         return ResponseEntity.ok(result)
     }

@@ -22,42 +22,32 @@ import java.util.UUID
         Index(name = "idx_warehouse_code", columnList = "code"),
         Index(name = "idx_warehouse_type", columnList = "type"),
         Index(name = "idx_warehouse_status", columnList = "status"),
-        Index(name = "idx_warehouse_region", columnList = "region")
-    ]
+        Index(name = "idx_warehouse_region", columnList = "region"),
+    ],
 )
 class Warehouse private constructor(
     @Id
     @Column(name = "id", length = 36)
     val id: String,
-
     @Column(name = "code", nullable = false, length = 50, unique = true)
     val code: String,
-
     @Column(name = "name", nullable = false, length = 100)
     var name: String,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
     val type: WarehouseType,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     var status: WarehouseStatus = WarehouseStatus.ACTIVE,
-
     @Embedded
     var address: WarehouseAddress,
-
     @Column(name = "region", length = 100)
     var region: String,
-
     @Column(name = "capacity", nullable = false)
     var capacity: Int,
-
     @Column(name = "current_stock", nullable = false)
-    var currentStock: Int = 0
-
+    var currentStock: Int = 0,
 ) : CompanyAwareEntity() {
-
     @Transient
     private val domainEvents: MutableList<DomainEvent> = mutableListOf()
 
@@ -71,22 +61,23 @@ class Warehouse private constructor(
             type: WarehouseType,
             address: WarehouseAddress,
             region: String,
-            capacity: Int
+            capacity: Int,
         ): Warehouse {
             require(capacity > 0) { "Capacity must be positive" }
             val warehouseId = generateWarehouseId()
 
-            val warehouse = Warehouse(
-                id = warehouseId,
-                code = code,
-                name = name,
-                type = type,
-                status = WarehouseStatus.ACTIVE,
-                address = address,
-                region = region,
-                capacity = capacity,
-                currentStock = 0
-            )
+            val warehouse =
+                Warehouse(
+                    id = warehouseId,
+                    code = code,
+                    name = name,
+                    type = type,
+                    status = WarehouseStatus.ACTIVE,
+                    address = address,
+                    region = region,
+                    capacity = capacity,
+                    currentStock = 0,
+                )
             warehouse.assignToCompany(companyId)
 
             return warehouse
@@ -136,7 +127,7 @@ class Warehouse private constructor(
         name: String? = null,
         address: WarehouseAddress? = null,
         region: String? = null,
-        capacity: Int? = null
+        capacity: Int? = null,
     ) {
         name?.let { this.name = it }
         address?.let { this.address = it }

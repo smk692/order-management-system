@@ -5,7 +5,7 @@ package com.oms.core.exception
  */
 enum class ErrorCode(
     val code: String,
-    val message: String
+    val message: String,
 ) {
     // Common errors (1xxx)
     ENTITY_NOT_FOUND("1001", "Entity not found"),
@@ -61,7 +61,8 @@ enum class ErrorCode(
     // External integration errors (10xxx)
     EXTERNAL_API_ERROR("10001", "External API error"),
     WEBHOOK_PROCESSING_FAILED("10002", "Webhook processing failed"),
-    RATE_LIMIT_EXCEEDED("10003", "Rate limit exceeded");
+    RATE_LIMIT_EXCEEDED("10003", "Rate limit exceeded"),
+    ;
 
     override fun toString(): String = "[$code] $message"
 }

@@ -6,7 +6,7 @@ package com.oms.core.exception
 open class DomainException(
     val errorCode: ErrorCode,
     override val message: String = errorCode.message,
-    override val cause: Throwable? = null
+    override val cause: Throwable? = null,
 ) : RuntimeException(message, cause)
 
 /**
@@ -14,18 +14,18 @@ open class DomainException(
  */
 class EntityNotFoundException(
     entityType: String,
-    id: String
+    id: String,
 ) : DomainException(
-    errorCode = ErrorCode.ENTITY_NOT_FOUND,
-    message = "$entityType not found with id: $id"
-)
+        errorCode = ErrorCode.ENTITY_NOT_FOUND,
+        message = "$entityType not found with id: $id",
+    )
 
 /**
  * Exception for business rule violations
  */
 class BusinessRuleException(
     message: String,
-    errorCode: ErrorCode = ErrorCode.BUSINESS_RULE_VIOLATION
+    errorCode: ErrorCode = ErrorCode.BUSINESS_RULE_VIOLATION,
 ) : DomainException(errorCode = errorCode, message = message)
 
 /**
@@ -34,17 +34,17 @@ class BusinessRuleException(
 class InvalidStateTransitionException(
     entityType: String,
     currentState: String,
-    targetState: String
+    targetState: String,
 ) : DomainException(
-    errorCode = ErrorCode.INVALID_STATE_TRANSITION,
-    message = "Cannot transition $entityType from $currentState to $targetState"
-)
+        errorCode = ErrorCode.INVALID_STATE_TRANSITION,
+        message = "Cannot transition $entityType from $currentState to $targetState",
+    )
 
 /**
  * Exception for authorization errors
  */
 class UnauthorizedException(
-    message: String = "Unauthorized access"
+    message: String = "Unauthorized access",
 ) : DomainException(errorCode = ErrorCode.UNAUTHORIZED, message = message)
 
 /**
@@ -53,8 +53,8 @@ class UnauthorizedException(
 class InsufficientStockException(
     productId: String,
     requested: Int,
-    available: Int
+    available: Int,
 ) : DomainException(
-    errorCode = ErrorCode.INSUFFICIENT_STOCK,
-    message = "Insufficient stock for product $productId. Requested: $requested, Available: $available"
-)
+        errorCode = ErrorCode.INSUFFICIENT_STOCK,
+        message = "Insufficient stock for product $productId. Requested: $requested, Available: $available",
+    )

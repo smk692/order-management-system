@@ -8,7 +8,7 @@ import com.oms.channel.domain.vo.MappingRole
 data class AssignWarehouseCommand(
     val warehouseId: String,
     val role: MappingRole,
-    val priority: Int = 0
+    val priority: Int = 0,
 )
 
 /**
@@ -20,5 +20,5 @@ data class MappingResult(
     val warehouseId: String,
     val role: MappingRole,
     val priority: Int,
-    val createdAt: String
+    val createdAt: String,
 )

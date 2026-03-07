@@ -14,7 +14,7 @@ import java.math.RoundingMode
 data class Money(
     val amount: BigDecimal,
     @Enumerated(EnumType.STRING)
-    val currency: Currency = Currency.KRW
+    val currency: Currency = Currency.KRW,
 ) {
     init {
         require(amount >= BigDecimal.ZERO) { "Amount cannot be negative" }
@@ -24,7 +24,10 @@ data class Money(
         val ZERO_KRW = Money(BigDecimal.ZERO, Currency.KRW)
         val ZERO_USD = Money(BigDecimal.ZERO, Currency.USD)
 
-        fun of(amount: Number, currency: Currency = Currency.KRW): Money {
+        fun of(
+            amount: Number,
+            currency: Currency = Currency.KRW,
+        ): Money {
             return Money(BigDecimal.valueOf(amount.toDouble()), currency)
         }
 
@@ -67,5 +70,9 @@ data class Money(
 }
 
 enum class Currency {
-    KRW, USD, JPY, CNY, EUR
+    KRW,
+    USD,
+    JPY,
+    CNY,
+    EUR,
 }

@@ -14,7 +14,7 @@ data class CreateChannelCommand(
     val secretKey: String,
     val additionalConfig: String? = null,
     val apiEndpoint: String? = null,
-    val description: String? = null
+    val description: String? = null,
 )
 
 /**
@@ -26,7 +26,7 @@ data class UpdateChannelCommand(
     val secretKey: String? = null,
     val additionalConfig: String? = null,
     val apiEndpoint: String? = null,
-    val description: String? = null
+    val description: String? = null,
 )
 
 /**
@@ -41,5 +41,5 @@ data class ChannelResult(
     val apiEndpoint: String?,
     val description: String?,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
 )

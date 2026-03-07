@@ -13,7 +13,7 @@ data class OrderResponse(
     val status: String,
     val items: List<OrderItemResponse>,
     val createdAt: LocalDateTime,
-    val updatedAt: LocalDateTime
+    val updatedAt: LocalDateTime,
 )
 
 data class OrderItemResponse(
@@ -22,5 +22,5 @@ data class OrderItemResponse(
     val productName: String,
     val quantity: Int,
     val unitPrice: BigDecimal,
-    val totalPrice: BigDecimal
+    val totalPrice: BigDecimal,
 )

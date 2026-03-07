@@ -25,5 +25,8 @@ interface WarehouseRepository {
     /**
      * Find warehouses by company ID and region
      */
-    fun findByCompanyIdAndRegion(companyId: UUID, region: String): List<Warehouse>
+    fun findByCompanyIdAndRegion(
+        companyId: UUID,
+        region: String,
+    ): List<Warehouse>
 }

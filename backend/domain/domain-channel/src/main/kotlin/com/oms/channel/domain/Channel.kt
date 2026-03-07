@@ -20,36 +20,28 @@ import java.util.UUID
     indexes = [
         Index(name = "idx_channel_company", columnList = "company_id"),
         Index(name = "idx_channel_type", columnList = "type"),
-        Index(name = "idx_channel_status", columnList = "status")
-    ]
+        Index(name = "idx_channel_status", columnList = "status"),
+    ],
 )
 class Channel private constructor(
     @Id
     @Column(name = "id", length = 36)
     val id: String,
-
     @Column(name = "name", nullable = false, length = 100)
     var name: String,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, length = 20)
     val type: ChannelType,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     var status: ChannelStatus = ChannelStatus.DISCONNECTED,
-
     @Embedded
     var credentials: ChannelCredentials,
-
     @Column(name = "api_endpoint", length = 500)
     var apiEndpoint: String? = null,
-
     @Column(name = "description", columnDefinition = "TEXT")
-    var description: String? = null
-
+    var description: String? = null,
 ) : CompanyAwareEntity() {
-
     @Transient
     private val domainEvents: MutableList<DomainEvent> = mutableListOf()
 
@@ -62,19 +54,20 @@ class Channel private constructor(
             type: ChannelType,
             credentials: ChannelCredentials,
             apiEndpoint: String? = null,
-            description: String? = null
+            description: String? = null,
         ): Channel {
             val channelId = generateChannelId()
 
-            val channel = Channel(
-                id = channelId,
-                name = name,
-                type = type,
-                status = ChannelStatus.DISCONNECTED,
-                credentials = credentials,
-                apiEndpoint = apiEndpoint,
-                description = description
-            )
+            val channel =
+                Channel(
+                    id = channelId,
+                    name = name,
+                    type = type,
+                    status = ChannelStatus.DISCONNECTED,
+                    credentials = credentials,
+                    apiEndpoint = apiEndpoint,
+                    description = description,
+                )
             channel.assignToCompany(companyId)
 
             return channel
@@ -124,7 +117,7 @@ class Channel private constructor(
     fun update(
         name: String? = null,
         apiEndpoint: String? = null,
-        description: String? = null
+        description: String? = null,
     ) {
         name?.let { this.name = it }
         apiEndpoint?.let { this.apiEndpoint = it }

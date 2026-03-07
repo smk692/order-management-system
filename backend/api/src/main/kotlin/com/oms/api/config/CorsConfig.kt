@@ -10,12 +10,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
  */
 @Configuration
 class CorsConfig : WebMvcConfigurer {
-
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
             .allowedOrigins(
-                "http://localhost:3000",  // React dev server
-                "http://localhost:5173"   // Vite dev server
+                "http://localhost:3000", // React dev server
+                "http://localhost:5173", // Vite dev server
             )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
             .allowedHeaders("*")

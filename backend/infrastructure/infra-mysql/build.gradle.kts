@@ -27,5 +27,5 @@ dependencies {
 
     // Flyway
     implementation("org.flywaydb:flyway-core")
-    implementation("org.flywaydb:flyway-database-postgresql")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:10.6.0")
 }

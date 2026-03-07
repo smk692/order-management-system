@@ -19,7 +19,6 @@ import java.util.concurrent.Executors
 @Configuration
 @EnableAsync
 class VirtualThreadsConfig {
-
     /**
      * Configures the default async task executor to use virtual threads.
      *

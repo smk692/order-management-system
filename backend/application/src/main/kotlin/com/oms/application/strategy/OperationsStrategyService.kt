@@ -14,24 +14,24 @@ import java.util.UUID
 @Service
 @Transactional
 class OperationsStrategyService(
-    private val strategyRepository: OperationsStrategyRepository
+    private val strategyRepository: OperationsStrategyRepository,
 ) {
-
     fun createStrategy(
         companyId: String,
         name: String,
         description: String?,
         targetCountries: List<String>,
-        weights: SimulationWeights
+        weights: SimulationWeights,
     ): OperationsStrategy {
-        val strategy = OperationsStrategy(
-            name = name,
-            description = description,
-            weights = weights
-        ).apply {
-            assignToCompany(companyId)
-            targetCountries.forEach { addTargetCountry(it) }
-        }
+        val strategy =
+            OperationsStrategy(
+                name = name,
+                description = description,
+                weights = weights,
+            ).apply {
+                assignToCompany(companyId)
+                targetCountries.forEach { addTargetCountry(it) }
+            }
 
         return strategyRepository.save(strategy)
     }
@@ -47,7 +47,10 @@ class OperationsStrategyService(
     }
 
     @Transactional(readOnly = true)
-    fun getStrategiesByStatus(companyId: String, status: StrategyStatus): List<OperationsStrategy> {
+    fun getStrategiesByStatus(
+        companyId: String,
+        status: StrategyStatus,
+    ): List<OperationsStrategy> {
         return strategyRepository.findByCompanyIdAndStatus(companyId, status)
     }
 
@@ -61,17 +64,18 @@ class OperationsStrategyService(
         efficiencyScore: Int,
         costSaving: BigDecimal,
         avgLeadTime: Int,
-        recommendation: String
+        recommendation: String,
     ): OperationsStrategy {
         val strategy = strategyRepository.findByIdOrThrow(strategyId)
 
-        val result = SimulationResult(
-            efficiencyScore = efficiencyScore,
-            costSaving = costSaving,
-            avgLeadTime = avgLeadTime,
-            recommendation = recommendation,
-            calculatedAt = LocalDateTime.now()
-        )
+        val result =
+            SimulationResult(
+                efficiencyScore = efficiencyScore,
+                costSaving = costSaving,
+                avgLeadTime = avgLeadTime,
+                recommendation = recommendation,
+                calculatedAt = LocalDateTime.now(),
+            )
 
         strategy.simulate(result)
         return strategyRepository.save(strategy)
@@ -89,13 +93,19 @@ class OperationsStrategyService(
         return strategyRepository.save(strategy)
     }
 
-    fun addTargetCountry(strategyId: UUID, country: String): OperationsStrategy {
+    fun addTargetCountry(
+        strategyId: UUID,
+        country: String,
+    ): OperationsStrategy {
         val strategy = strategyRepository.findByIdOrThrow(strategyId)
         strategy.addTargetCountry(country)
         return strategyRepository.save(strategy)
     }
 
-    fun removeTargetCountry(strategyId: UUID, country: String): OperationsStrategy {
+    fun removeTargetCountry(
+        strategyId: UUID,
+        country: String,
+    ): OperationsStrategy {
         val strategy = strategyRepository.findByIdOrThrow(strategyId)
         strategy.removeTargetCountry(country)
         return strategyRepository.save(strategy)

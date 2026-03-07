@@ -24,5 +24,8 @@ interface ChannelWarehouseMappingRepository {
     /**
      * Delete a mapping between a channel and warehouse
      */
-    fun deleteByChannelIdAndWarehouseId(channelId: String, warehouseId: String)
+    fun deleteByChannelIdAndWarehouseId(
+        channelId: String,
+        warehouseId: String,
+    )
 }

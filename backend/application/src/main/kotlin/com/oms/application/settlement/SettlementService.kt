@@ -13,17 +13,17 @@ import java.util.*
 @Service
 @Transactional
 class SettlementService(
-    private val settlementRepository: SettlementRepository
+    private val settlementRepository: SettlementRepository,
 ) {
-
     fun createSettlement(command: CreateSettlementCommand): SettlementResult {
         val companyId = UUID.fromString(command.companyId)
         val period = SettlementPeriod(command.year, command.month)
 
-        val settlement = Settlement(
-            channelId = command.channelId,
-            period = period
-        )
+        val settlement =
+            Settlement(
+                channelId = command.channelId,
+                period = period,
+            )
 
         settlement.assignToCompany(command.companyId)
 
@@ -33,8 +33,9 @@ class SettlementService(
 
     @Transactional(readOnly = true)
     fun getSettlement(id: UUID): SettlementResult {
-        val settlement = settlementRepository.findById(id)
-            ?: throw IllegalArgumentException("Settlement not found: $id")
+        val settlement =
+            settlementRepository.findById(id)
+                ?: throw IllegalArgumentException("Settlement not found: $id")
         return toSettlementResult(settlement)
     }
 
@@ -54,7 +55,7 @@ class SettlementService(
     fun getSettlementsByCompanyAndPeriod(
         companyId: UUID,
         year: Int,
-        month: Int
+        month: Int,
     ): List<SettlementResult> {
         return settlementRepository.findByCompanyIdAndPeriod(companyId, year, month)
             .map { toSettlementResult(it) }
@@ -63,21 +64,26 @@ class SettlementService(
     @Transactional(readOnly = true)
     fun getSettlementsByCompanyAndStatus(
         companyId: UUID,
-        status: SettlementStatus
+        status: SettlementStatus,
     ): List<SettlementResult> {
         return settlementRepository.findByCompanyIdAndStatus(companyId, status)
             .map { toSettlementResult(it) }
     }
 
-    fun addSettlementItem(id: UUID, command: AddSettlementItemCommand): SettlementResult {
-        val settlement = settlementRepository.findById(id)
-            ?: throw IllegalArgumentException("Settlement not found: $id")
+    fun addSettlementItem(
+        id: UUID,
+        command: AddSettlementItemCommand,
+    ): SettlementResult {
+        val settlement =
+            settlementRepository.findById(id)
+                ?: throw IllegalArgumentException("Settlement not found: $id")
 
-        val item = SettlementItem.create(
-            orderId = command.orderId,
-            orderAmount = command.orderAmount,
-            commissionRate = command.commissionRate
-        )
+        val item =
+            SettlementItem.create(
+                orderId = command.orderId,
+                orderAmount = command.orderAmount,
+                commissionRate = command.commissionRate,
+            )
 
         settlement.addItem(item)
         val savedSettlement = settlementRepository.save(settlement)
@@ -85,8 +91,9 @@ class SettlementService(
     }
 
     fun calculateSettlement(id: UUID): SettlementResult {
-        val settlement = settlementRepository.findById(id)
-            ?: throw IllegalArgumentException("Settlement not found: $id")
+        val settlement =
+            settlementRepository.findById(id)
+                ?: throw IllegalArgumentException("Settlement not found: $id")
 
         settlement.calculate()
         val savedSettlement = settlementRepository.save(settlement)
@@ -94,8 +101,9 @@ class SettlementService(
     }
 
     fun confirmSettlement(id: UUID): SettlementResult {
-        val settlement = settlementRepository.findById(id)
-            ?: throw IllegalArgumentException("Settlement not found: $id")
+        val settlement =
+            settlementRepository.findById(id)
+                ?: throw IllegalArgumentException("Settlement not found: $id")
 
         settlement.confirm()
         val savedSettlement = settlementRepository.save(settlement)
@@ -103,8 +111,9 @@ class SettlementService(
     }
 
     fun markSettlementAsPaid(id: UUID): SettlementResult {
-        val settlement = settlementRepository.findById(id)
-            ?: throw IllegalArgumentException("Settlement not found: $id")
+        val settlement =
+            settlementRepository.findById(id)
+                ?: throw IllegalArgumentException("Settlement not found: $id")
 
         settlement.markAsPaid()
         val savedSettlement = settlementRepository.save(settlement)
@@ -125,7 +134,7 @@ class SettlementService(
             paidAt = settlement.paidAt?.toString(),
             items = settlement.items.map { toSettlementItemResult(it) },
             createdAt = settlement.createdAt.toString(),
-            updatedAt = settlement.updatedAt.toString()
+            updatedAt = settlement.updatedAt.toString(),
         )
     }
 
@@ -136,7 +145,7 @@ class SettlementService(
             orderAmount = item.orderAmount,
             commissionRate = item.commissionRate,
             commissionAmount = item.commissionAmount,
-            settlementAmount = item.settlementAmount
+            settlementAmount = item.settlementAmount,
         )
     }
 }

@@ -9,7 +9,6 @@ import jakarta.persistence.MappedSuperclass
  */
 @MappedSuperclass
 abstract class CompanyAwareEntity : AuditableEntity() {
-
     @Column(name = "company_id", nullable = false, updatable = false, length = 36)
     lateinit var companyId: String
         protected set

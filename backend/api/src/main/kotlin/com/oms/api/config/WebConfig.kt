@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration
 class WebConfig {
-
     @Bean
     fun objectMapper(): ObjectMapper {
         return ObjectMapper().apply {

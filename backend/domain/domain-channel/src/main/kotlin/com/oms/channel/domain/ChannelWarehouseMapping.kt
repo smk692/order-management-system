@@ -17,35 +17,29 @@ import java.util.UUID
         Index(name = "idx_mapping_company", columnList = "company_id"),
         Index(name = "idx_mapping_channel", columnList = "channel_id"),
         Index(name = "idx_mapping_warehouse", columnList = "warehouse_id"),
-        Index(name = "idx_mapping_role", columnList = "role")
+        Index(name = "idx_mapping_role", columnList = "role"),
     ],
     uniqueConstraints = [
         UniqueConstraint(
             name = "uk_channel_warehouse",
-            columnNames = ["channel_id", "warehouse_id"]
-        )
-    ]
+            columnNames = ["channel_id", "warehouse_id"],
+        ),
+    ],
 )
 class ChannelWarehouseMapping private constructor(
     @Id
     @Column(name = "id", length = 36)
     val id: String,
-
     @Column(name = "channel_id", nullable = false, length = 36)
     val channelId: String,
-
     @Column(name = "warehouse_id", nullable = false, length = 36)
     val warehouseId: String,
-
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 20)
     var role: MappingRole,
-
     @Column(name = "priority", nullable = false)
-    var priority: Int
-
+    var priority: Int,
 ) : CompanyAwareEntity() {
-
     @Transient
     private val domainEvents: MutableList<DomainEvent> = mutableListOf()
 
@@ -55,19 +49,20 @@ class ChannelWarehouseMapping private constructor(
             channelId: String,
             warehouseId: String,
             role: MappingRole,
-            priority: Int = 0
+            priority: Int = 0,
         ): ChannelWarehouseMapping {
             require(priority >= 0) { "Priority must be non-negative" }
 
             val mappingId = UUID.randomUUID().toString()
 
-            val mapping = ChannelWarehouseMapping(
-                id = mappingId,
-                channelId = channelId,
-                warehouseId = warehouseId,
-                role = role,
-                priority = priority
-            )
+            val mapping =
+                ChannelWarehouseMapping(
+                    id = mappingId,
+                    channelId = channelId,
+                    warehouseId = warehouseId,
+                    role = role,
+                    priority = priority,
+                )
             mapping.assignToCompany(companyId)
 
             return mapping

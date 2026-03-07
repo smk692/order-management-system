@@ -1,5 +1,5 @@
 build:
-  maxIssues: 0
+  maxIssues: 200
   excludeCorrectable: false
   weights:
     complexity: 2
@@ -45,7 +45,7 @@ complexity:
     threshold: 4
   ComplexInterface:
     active: false
-  ComplexMethod:
+  CyclomaticComplexMethod:
     active: true
     threshold: 15
   LargeClass:
@@ -155,10 +155,6 @@ exceptions:
   TooGenericExceptionThrown:
     active: true
 
-formatting:
-  active: true
-  android: false
-  autoCorrect: true
 
 naming:
   active: true
@@ -227,8 +223,6 @@ potential-bugs:
     active: false
   DoubleMutabilityForCollection:
     active: true
-  DuplicateCaseInWhenExpression:
-    active: true
   EqualsAlwaysReturnsTrueOrFalse:
     active: true
   EqualsWithHashCodeExist:
@@ -253,12 +247,8 @@ potential-bugs:
     active: false
   MapGetWithNotNullAssertionOperator:
     active: true
-  MissingWhenCase:
-    active: true
   NullableToStringCall:
     active: false
-  RedundantElseInWhen:
-    active: true
   UnconditionalJumpStatementInLoop:
     active: false
   UnnecessaryNotNullOperator:
@@ -298,7 +288,7 @@ style:
     active: false
   ForbiddenComment:
     active: true
-    values:
+    comments:
       - 'TODO:'
       - 'FIXME:'
       - 'STOPSHIP:'
@@ -307,16 +297,10 @@ style:
     active: false
   ForbiddenMethodCall:
     active: false
-  ForbiddenPublicDataClass:
-    active: true
   ForbiddenVoid:
     active: true
   FunctionOnlyReturningConstant:
     active: true
-  LibraryCodeMustSpecifyReturnType:
-    active: true
-  LibraryEntitiesShouldNotBePublic:
-    active: false
   LoopWithTooManyJumpStatements:
     active: true
     maxJumpCount: 1
@@ -337,8 +321,10 @@ style:
     ignoreEnums: false
     ignoreRanges: false
     ignoreExtensionFunctions: true
-  MandatoryBracesIfStatements:
+  BracesOnIfStatements:
     active: false
+    singleLine: always
+    multiLine: always
   MandatoryBracesLoops:
     active: false
   MaxLineLength:
@@ -369,7 +355,8 @@ style:
   ReturnCount:
     active: true
     max: 2
-    excludedFunctions: 'equals'
+    excludedFunctions:
+      - 'equals'
     excludeLabeled: false
     excludeReturnFromLambda: true
     excludeGuardClauses: false

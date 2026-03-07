@@ -12,40 +12,39 @@ import java.time.Instant
     name = "product_barcode",
     indexes = [
         Index(name = "idx_barcode_product", columnList = "product_id"),
-        Index(name = "idx_barcode_code", columnList = "code")
+        Index(name = "idx_barcode_code", columnList = "code"),
     ],
     uniqueConstraints = [
-        UniqueConstraint(name = "uk_barcode_product_code", columnNames = ["product_id", "code"])
-    ]
+        UniqueConstraint(name = "uk_barcode_product_code", columnNames = ["product_id", "code"]),
+    ],
 )
 class Barcode private constructor(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     val id: Long = 0,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     val product: Product,
-
     @Column(name = "code", nullable = false, length = 50)
     val code: String,
-
     @Column(name = "is_main", nullable = false)
     var isMain: Boolean = false,
-
     @Column(name = "created_at", nullable = false, updatable = false)
-    val createdAt: Instant = Instant.now()
+    val createdAt: Instant = Instant.now(),
 ) {
-
     companion object {
-        fun create(product: Product, code: String, isMain: Boolean = false): Barcode {
+        fun create(
+            product: Product,
+            code: String,
+            isMain: Boolean = false,
+        ): Barcode {
             require(code.isNotBlank()) { "Barcode code cannot be blank" }
 
             return Barcode(
                 product = product,
                 code = code,
-                isMain = isMain
+                isMain = isMain,
             )
         }
     }

@@ -9,7 +9,7 @@ import jakarta.persistence.Embeddable
 @Embeddable
 data class LocalizedString(
     val ko: String,
-    val en: String? = null
+    val en: String? = null,
 ) {
     init {
         require(ko.isNotBlank()) { "Korean text cannot be blank" }
@@ -18,7 +18,7 @@ data class LocalizedString(
     fun get(language: Language): String {
         return when (language) {
             Language.KO -> ko
-            Language.EN -> en ?: ko  // Fallback to Korean if English not available
+            Language.EN -> en ?: ko // Fallback to Korean if English not available
         }
     }
 
@@ -31,7 +31,10 @@ data class LocalizedString(
     companion object {
         fun korean(text: String): LocalizedString = LocalizedString(ko = text)
 
-        fun bilingual(ko: String, en: String): LocalizedString = LocalizedString(ko = ko, en = en)
+        fun bilingual(
+            ko: String,
+            en: String,
+        ): LocalizedString = LocalizedString(ko = ko, en = en)
 
         fun fromMap(map: Map<String, String>): LocalizedString {
             val ko = map["ko"] ?: throw IllegalArgumentException("Korean text is required")
@@ -42,5 +45,6 @@ data class LocalizedString(
 }
 
 enum class Language {
-    KO, EN
+    KO,
+    EN,
 }

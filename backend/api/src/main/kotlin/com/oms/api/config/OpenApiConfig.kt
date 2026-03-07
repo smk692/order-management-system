@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration
 class OpenApiConfig {
-
     @Bean
     fun openAPI(): OpenAPI {
         return OpenAPI()
@@ -24,12 +23,12 @@ class OpenApiConfig {
                     .contact(
                         Contact()
                             .name("OMS Team")
-                            .email("oms@example.com")
+                            .email("oms@example.com"),
                     )
                     .license(
                         License()
-                            .name("Private")
-                    )
+                            .name("Private"),
+                    ),
             )
     }
 }

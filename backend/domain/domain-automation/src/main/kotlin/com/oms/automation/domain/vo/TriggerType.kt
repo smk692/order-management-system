@@ -6,5 +6,5 @@ enum class TriggerType {
     STOCK_LOW,
     STOCK_CHANGED,
     PAYMENT_FAILED,
-    SHIPPING_STARTED
+    SHIPPING_STARTED,
 }

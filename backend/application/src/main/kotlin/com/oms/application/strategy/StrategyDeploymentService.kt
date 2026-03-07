@@ -12,14 +12,13 @@ import java.util.UUID
 @Transactional
 class StrategyDeploymentService(
     private val deploymentRepository: StrategyDeploymentRepository,
-    private val strategyRepository: OperationsStrategyRepository
+    private val strategyRepository: OperationsStrategyRepository,
 ) {
-
     fun deployStrategy(
         companyId: String,
         strategyId: UUID,
         country: String,
-        notes: String? = null
+        notes: String? = null,
     ): StrategyDeployment {
         // Verify strategy exists and belongs to company
         val strategy = strategyRepository.findByIdOrThrow(strategyId)
@@ -27,13 +26,14 @@ class StrategyDeploymentService(
             "Strategy $strategyId does not belong to company $companyId"
         }
 
-        val deployment = StrategyDeployment(
-            strategyId = strategyId,
-            country = country,
-            notes = notes
-        ).apply {
-            assignToCompany(companyId)
-        }
+        val deployment =
+            StrategyDeployment(
+                strategyId = strategyId,
+                country = country,
+                notes = notes,
+            ).apply {
+                assignToCompany(companyId)
+            }
 
         return deploymentRepository.save(deployment)
     }
@@ -54,28 +54,43 @@ class StrategyDeploymentService(
     }
 
     @Transactional(readOnly = true)
-    fun getDeploymentsByCountry(companyId: String, country: String): List<StrategyDeployment> {
+    fun getDeploymentsByCountry(
+        companyId: String,
+        country: String,
+    ): List<StrategyDeployment> {
         return deploymentRepository.findByCompanyIdAndCountry(companyId, country)
     }
 
     @Transactional(readOnly = true)
-    fun getDeploymentsByStatus(companyId: String, status: DeploymentStatus): List<StrategyDeployment> {
+    fun getDeploymentsByStatus(
+        companyId: String,
+        status: DeploymentStatus,
+    ): List<StrategyDeployment> {
         return deploymentRepository.findByCompanyIdAndStatus(companyId, status)
     }
 
-    fun rollbackDeployment(deploymentId: UUID, reason: String? = null): StrategyDeployment {
+    fun rollbackDeployment(
+        deploymentId: UUID,
+        reason: String? = null,
+    ): StrategyDeployment {
         val deployment = deploymentRepository.findByIdOrThrow(deploymentId)
         deployment.rollback(reason)
         return deploymentRepository.save(deployment)
     }
 
-    fun markDeploymentAsFailed(deploymentId: UUID, reason: String): StrategyDeployment {
+    fun markDeploymentAsFailed(
+        deploymentId: UUID,
+        reason: String,
+    ): StrategyDeployment {
         val deployment = deploymentRepository.findByIdOrThrow(deploymentId)
         deployment.markAsFailed(reason)
         return deploymentRepository.save(deployment)
     }
 
-    fun updateDeploymentNotes(deploymentId: UUID, notes: String): StrategyDeployment {
+    fun updateDeploymentNotes(
+        deploymentId: UUID,
+        notes: String,
+    ): StrategyDeployment {
         val deployment = deploymentRepository.findByIdOrThrow(deploymentId)
         deployment.updateNotes(notes)
         return deploymentRepository.save(deployment)

@@ -8,47 +8,47 @@ data class CreateStockCommand(
     val productId: String,
     val warehouseId: String,
     val initialQuantity: Int = 0,
-    val safetyStock: Int = 0
+    val safetyStock: Int = 0,
 )
 
 data class ReceiveStockCommand(
     val stockId: UUID,
-    val quantity: Int
+    val quantity: Int,
 )
 
 data class ReserveStockCommand(
     val stockId: UUID,
     val quantity: Int,
-    val orderId: String? = null
+    val orderId: String? = null,
 )
 
 data class ReleaseStockCommand(
     val stockId: UUID,
-    val quantity: Int
+    val quantity: Int,
 )
 
 data class ShipStockCommand(
     val stockId: UUID,
     val quantity: Int,
-    val orderId: String? = null
+    val orderId: String? = null,
 )
 
 data class AdjustStockCommand(
     val stockId: UUID,
     val quantity: Int,
-    val reason: String
+    val reason: String,
 )
 
 data class AllocateToChannelCommand(
     val stockId: UUID,
     val channelId: String,
-    val quantity: Int
+    val quantity: Int,
 )
 
 data class DeallocateFromChannelCommand(
     val stockId: UUID,
     val channelId: String,
-    val quantity: Int
+    val quantity: Int,
 )
 
 data class StockResult(
@@ -61,5 +61,5 @@ data class StockResult(
     val reserved: Int,
     val safetyStock: Int,
     val status: StockStatus,
-    val channelAllocations: Map<String, Int>
+    val channelAllocations: Map<String, Int>,
 )

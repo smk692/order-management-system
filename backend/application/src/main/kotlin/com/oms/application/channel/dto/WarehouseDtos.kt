@@ -17,7 +17,7 @@ data class CreateWarehouseCommand(
     val city: String,
     val country: String,
     val region: String,
-    val capacity: Int
+    val capacity: Int,
 )
 
 /**
@@ -31,7 +31,7 @@ data class UpdateWarehouseCommand(
     val city: String? = null,
     val country: String? = null,
     val region: String? = null,
-    val capacity: Int? = null
+    val capacity: Int? = null,
 )
 
 /**
@@ -55,5 +55,5 @@ data class WarehouseResult(
     val availableCapacity: Int,
     val utilizationPercentage: Double,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
 )

@@ -6,7 +6,6 @@ import com.oms.application.inventory.dto.StockResult
 import com.oms.inventory.repository.StockRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.UUID
 
 /**
  * Application service for Stock channel allocation
@@ -14,15 +13,15 @@ import java.util.UUID
 @Service
 @Transactional
 class StockAllocationService(
-    private val stockRepository: StockRepository
+    private val stockRepository: StockRepository,
 ) {
-
     /**
      * Allocate stock to a specific channel
      */
     fun allocateToChannel(command: AllocateToChannelCommand): StockResult {
-        val stock = stockRepository.findById(command.stockId)
-            ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
+        val stock =
+            stockRepository.findById(command.stockId)
+                ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
 
         stock.allocateToChannel(command.channelId, command.quantity)
         val savedStock = stockRepository.save(stock)
@@ -34,8 +33,9 @@ class StockAllocationService(
      * Deallocate stock from a specific channel
      */
     fun deallocateFromChannel(command: DeallocateFromChannelCommand): StockResult {
-        val stock = stockRepository.findById(command.stockId)
-            ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
+        val stock =
+            stockRepository.findById(command.stockId)
+                ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
 
         stock.deallocateFromChannel(command.channelId, command.quantity)
         val savedStock = stockRepository.save(stock)
@@ -54,7 +54,7 @@ class StockAllocationService(
             reserved = stock.reserved,
             safetyStock = stock.safetyStock,
             status = stock.status,
-            channelAllocations = stock.channelAllocations.toMap()
+            channelAllocations = stock.channelAllocations.toMap(),
         )
     }
 }

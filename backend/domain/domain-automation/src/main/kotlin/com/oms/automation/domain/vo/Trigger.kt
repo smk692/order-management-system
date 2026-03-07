@@ -8,5 +8,5 @@ import jakarta.persistence.Enumerated
 data class Trigger(
     @Enumerated(EnumType.STRING)
     val type: TriggerType,
-    val config: String? = null
+    val config: String? = null,
 )

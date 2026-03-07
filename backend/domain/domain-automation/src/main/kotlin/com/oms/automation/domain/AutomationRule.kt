@@ -11,41 +11,33 @@ import java.util.UUID
 class AutomationRule(
     @Column(nullable = false)
     var name: String,
-
     @Column(columnDefinition = "TEXT")
     var description: String? = null,
-
     @Embedded
     var trigger: Trigger,
-
     @Column(nullable = false)
     var enabled: Boolean = true,
-
     @Column(nullable = false)
     var priority: Int = 0,
-
     @Column(nullable = false)
     var executionCount: Long = 0,
-
     @Column
     var lastExecutedAt: LocalDateTime? = null,
-
     @Id
     @Column(length = 36)
-    val id: String = UUID.randomUUID().toString()
+    val id: String = UUID.randomUUID().toString(),
 ) : CompanyAwareEntity() {
-
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
         name = "automation_rule_conditions",
-        joinColumns = [JoinColumn(name = "rule_id")]
+        joinColumns = [JoinColumn(name = "rule_id")],
     )
     val conditions: MutableList<Condition> = mutableListOf()
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
         name = "automation_rule_actions",
-        joinColumns = [JoinColumn(name = "rule_id")]
+        joinColumns = [JoinColumn(name = "rule_id")],
     )
     val actions: MutableList<Action> = mutableListOf()
 

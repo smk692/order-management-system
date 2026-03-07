@@ -8,5 +8,5 @@ import jakarta.persistence.Enumerated
 data class Action(
     @Enumerated(EnumType.STRING)
     val type: ActionType,
-    val config: String
+    val config: String,
 )

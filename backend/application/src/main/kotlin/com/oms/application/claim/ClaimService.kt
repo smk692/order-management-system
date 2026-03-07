@@ -15,35 +15,36 @@ import java.util.*
 @Service
 @Transactional
 class ClaimService(
-    private val claimRepository: ClaimRepository
+    private val claimRepository: ClaimRepository,
 ) {
-
     fun createClaim(command: CreateClaimCommand): ClaimResult {
         val companyId = UUID.fromString(command.companyId)
         val claimId = UUID.randomUUID().toString()
         val claimNumber = generateClaimNumber()
 
-        val claim = Claim(
-            id = claimId,
-            claimNumber = claimNumber,
-            orderId = command.orderId,
-            type = command.type,
-            reason = command.reason,
-            memo = command.memo,
-            priority = command.priority
-        )
+        val claim =
+            Claim(
+                id = claimId,
+                claimNumber = claimNumber,
+                orderId = command.orderId,
+                type = command.type,
+                reason = command.reason,
+                memo = command.memo,
+                priority = command.priority,
+            )
 
         claim.assignToCompany(command.companyId)
 
         command.items.forEach { itemCommand ->
-            val item = ClaimItem(
-                claimId = claimId,
-                productId = itemCommand.productId,
-                productName = itemCommand.productName,
-                quantity = itemCommand.quantity,
-                unitPrice = itemCommand.unitPrice,
-                reason = itemCommand.reason
-            )
+            val item =
+                ClaimItem(
+                    claimId = claimId,
+                    productId = itemCommand.productId,
+                    productName = itemCommand.productName,
+                    quantity = itemCommand.quantity,
+                    unitPrice = itemCommand.unitPrice,
+                    reason = itemCommand.reason,
+                )
             claim.addItem(item)
         }
 
@@ -53,15 +54,17 @@ class ClaimService(
 
     @Transactional(readOnly = true)
     fun getClaim(id: String): ClaimResult {
-        val claim = claimRepository.findById(id)
-            ?: throw IllegalArgumentException("Claim not found: $id")
+        val claim =
+            claimRepository.findById(id)
+                ?: throw IllegalArgumentException("Claim not found: $id")
         return toClaimResult(claim)
     }
 
     @Transactional(readOnly = true)
     fun getClaimByNumber(claimNumber: String): ClaimResult {
-        val claim = claimRepository.findByClaimNumber(claimNumber)
-            ?: throw IllegalArgumentException("Claim not found: $claimNumber")
+        val claim =
+            claimRepository.findByClaimNumber(claimNumber)
+                ?: throw IllegalArgumentException("Claim not found: $claimNumber")
         return toClaimResult(claim)
     }
 
@@ -78,38 +81,53 @@ class ClaimService(
     }
 
     @Transactional(readOnly = true)
-    fun getClaimsByCompanyAndStatus(companyId: UUID, status: ClaimStatus): List<ClaimResult> {
+    fun getClaimsByCompanyAndStatus(
+        companyId: UUID,
+        status: ClaimStatus,
+    ): List<ClaimResult> {
         return claimRepository.findByCompanyIdAndStatus(companyId, status)
             .map { toClaimResult(it) }
     }
 
     @Transactional(readOnly = true)
-    fun getClaimsByCompanyAndType(companyId: UUID, type: ClaimType): List<ClaimResult> {
+    fun getClaimsByCompanyAndType(
+        companyId: UUID,
+        type: ClaimType,
+    ): List<ClaimResult> {
         return claimRepository.findByCompanyIdAndType(companyId, type)
             .map { toClaimResult(it) }
     }
 
     fun startProcessing(id: String): ClaimResult {
-        val claim = claimRepository.findById(id)
-            ?: throw IllegalArgumentException("Claim not found: $id")
+        val claim =
+            claimRepository.findById(id)
+                ?: throw IllegalArgumentException("Claim not found: $id")
 
         claim.startProcessing()
         val savedClaim = claimRepository.save(claim)
         return toClaimResult(savedClaim)
     }
 
-    fun completeClaim(id: String, command: CompleteClaimCommand): ClaimResult {
-        val claim = claimRepository.findById(id)
-            ?: throw IllegalArgumentException("Claim not found: $id")
+    fun completeClaim(
+        id: String,
+        command: CompleteClaimCommand,
+    ): ClaimResult {
+        val claim =
+            claimRepository.findById(id)
+                ?: throw IllegalArgumentException("Claim not found: $id")
 
         claim.complete(command.refundAmount)
         val savedClaim = claimRepository.save(claim)
         return toClaimResult(savedClaim)
     }
 
-    fun rejectClaim(id: String, command: RejectClaimCommand): ClaimResult {
-        val claim = claimRepository.findById(id)
-            ?: throw IllegalArgumentException("Claim not found: $id")
+    fun rejectClaim(
+        id: String,
+        command: RejectClaimCommand,
+    ): ClaimResult {
+        val claim =
+            claimRepository.findById(id)
+                ?: throw IllegalArgumentException("Claim not found: $id")
 
         claim.reject(command.reason)
         val savedClaim = claimRepository.save(claim)
@@ -121,9 +139,10 @@ class ClaimService(
         val dateString = today.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
 
         val existingClaims = claimRepository.findByCompanyId(UUID.randomUUID())
-        val sequence = existingClaims
-            .filter { it.claimNumber.startsWith("CLM-$dateString") }
-            .size + 1
+        val sequence =
+            existingClaims
+                .filter { it.claimNumber.startsWith("CLM-$dateString") }
+                .size + 1
 
         return "CLM-$dateString-${sequence.toString().padStart(3, '0')}"
     }
@@ -144,7 +163,7 @@ class ClaimService(
             processedAt = claim.processedAt?.toString(),
             items = claim.items.map { toClaimItemResult(it) },
             createdAt = claim.createdAt.toString(),
-            updatedAt = claim.updatedAt.toString()
+            updatedAt = claim.updatedAt.toString(),
         )
     }
 
@@ -156,7 +175,7 @@ class ClaimService(
             quantity = item.quantity,
             unitPrice = item.unitPrice,
             totalPrice = item.getTotalPrice(),
-            reason = item.reason
+            reason = item.reason,
         )
     }
 }

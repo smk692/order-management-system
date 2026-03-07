@@ -15,6 +15,7 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         'src/test/',
+        'src/api/generated/',
         '**/*.config.ts',
         '**/*.d.ts',
       ],
