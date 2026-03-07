@@ -8,6 +8,7 @@ plugins {
     id("io.spring.dependency-management") apply false
     id("io.gitlab.arturbosch.detekt") version "1.23.5"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    id("org.jetbrains.kotlinx.kover") version "0.7.5"
 }
 
 allprojects {
@@ -24,6 +25,7 @@ subprojects {
     apply(plugin = "io.spring.dependency-management")
     apply(plugin = "io.gitlab.arturbosch.detekt")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "org.jetbrains.kotlinx.kover")
 
     the<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension>().apply {
         imports {
@@ -77,6 +79,33 @@ subprojects {
         filter {
             exclude("**/generated/**")
             include("**/kotlin/**")
+        }
+    }
+
+    // Kover configuration
+    configure<kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension> {
+        reports {
+            filters {
+                excludes {
+                    classes("*Test", "*Tests")
+                }
+            }
+
+            verify {
+                onCheck = true
+                rule {
+                    minBound(80)
+                }
+            }
+
+            total {
+                html {
+                    onCheck = true
+                }
+                xml {
+                    onCheck = true
+                }
+            }
         }
     }
 
