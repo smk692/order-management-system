@@ -7,18 +7,18 @@ import java.util.UUID
 
 data class TriggerDto(
     val type: TriggerType,
-    val config: String? = null
+    val config: String? = null,
 )
 
 data class ConditionDto(
     val field: String,
     val operator: ConditionOperator,
-    val value: String
+    val value: String,
 )
 
 data class ActionDto(
     val type: ActionType,
-    val config: String
+    val config: String,
 )
 
 data class CreateRuleCommand(
@@ -28,7 +28,7 @@ data class CreateRuleCommand(
     val trigger: TriggerDto,
     val conditions: List<ConditionDto> = emptyList(),
     val actions: List<ActionDto> = emptyList(),
-    val priority: Int = 0
+    val priority: Int = 0,
 )
 
 data class UpdateRuleCommand(
@@ -36,7 +36,7 @@ data class UpdateRuleCommand(
     val description: String? = null,
     val conditions: List<ConditionDto>,
     val actions: List<ActionDto>,
-    val priority: Int
+    val priority: Int,
 )
 
 data class AutomationRuleResult(
@@ -52,7 +52,7 @@ data class AutomationRuleResult(
     val executionCount: Long,
     val lastExecutedAt: LocalDateTime?,
     val createdAt: Instant,
-    val updatedAt: Instant
+    val updatedAt: Instant,
 )
 
 // Extension functions for mapping

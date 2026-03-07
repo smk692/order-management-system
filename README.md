@@ -56,23 +56,35 @@ Global OMS는 대규모 이커머스 운영을 위한 엔터프라이즈급 주�
 
 ### Backend
 - **Language**: Kotlin 1.9
+- **Runtime**: JDK 21 (Virtual Threads)
 - **Framework**: Spring Boot 3.2
-- **Database**: MySQL 8.0, MongoDB 7.0
+- **Database**: PostgreSQL 16, MongoDB 7.0
 - **Cache**: Redis 7
 - **Build**: Gradle 8.5
+- **Code Quality**: detekt, ktlint
 
 ### Frontend
 - **Language**: TypeScript
 - **Framework**: React 19
 - **Build**: Vite 6
-- **State**: Zustand
+- **Package Manager**: pnpm
+- **State**: Zustand (UI), React Query (Server State)
+- **Testing**: Vitest, Testing Library
+- **Code Quality**: ESLint 9, Prettier
 - **i18n**: i18next
+
+### Infrastructure
+- **CI/CD**: GitHub Actions
+- **Containers**: Docker, Docker Compose
+- **Databases**: PostgreSQL 16, MongoDB 7.0, Redis 7
 
 ## Quick Start with Docker
 
 ### Prerequisites
 - Docker Desktop 4.0+
 - Docker Compose 2.0+
+- (For local development) JDK 21+
+- (For local development) pnpm 9+
 
 ### 1. Clone and Setup
 
@@ -107,11 +119,11 @@ docker compose logs -f
 For local backend/frontend development:
 
 ```bash
-# Start only infrastructure (MySQL, MongoDB, Redis)
+# Start only infrastructure (PostgreSQL, MongoDB, Redis)
 docker compose -f docker-compose.dev.yml up -d
 
 # Additional tools available:
-# - Adminer (MySQL): http://localhost:8081
+# - Adminer (PostgreSQL): http://localhost:8081
 # - Mongo Express: http://localhost:8082
 ```
 
@@ -124,8 +136,8 @@ cd backend
 
 # Frontend (in another terminal)
 cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 ### 4. Stop Services
@@ -161,13 +173,25 @@ cd backend
 cd frontend
 
 # Install dependencies
-npm install
+pnpm install
 
 # Development
-npm run dev
+pnpm dev
 
 # Build
-npm run build
+pnpm build
+
+# Run tests
+pnpm test
+
+# Type checking
+pnpm type-check
+
+# Linting
+pnpm lint
+
+# Format code
+pnpm format
 ```
 
 ## Project Structure
@@ -198,7 +222,9 @@ order-management-system/
 │   ├── services/               # API Services
 │   └── i18n/                   # Internationalization
 ├── docker/
-│   └── mysql/init/             # MySQL Init Scripts
+│   └── postgres/init/          # PostgreSQL Init Scripts
+├── .github/
+│   └── workflows/              # GitHub Actions CI/CD
 ├── docker-compose.yml          # Full Stack
 ├── docker-compose.dev.yml      # Infrastructure Only
 └── .env.example                # Environment Template
@@ -221,14 +247,48 @@ order-management-system/
 | Identity | `/api/v1/companies` | Company management |
 | Identity | `/api/v1/users` | User management |
 
+## CI/CD
+
+This project uses GitHub Actions for continuous integration:
+
+- **Backend CI**: Builds and tests backend on push/PR to main
+- **Frontend CI**: Builds, lints, type-checks, and tests frontend on push/PR to main
+- **Docker Build**: Validates Docker builds on push/PR to main
+
+See `.github/workflows/` for workflow details.
+
+## Code Quality
+
+### Backend
+- **detekt**: Static code analysis
+- **ktlint**: Kotlin code style enforcement
+- Run: `./gradlew detekt ktlintCheck`
+
+### Frontend
+- **ESLint 9**: JavaScript/TypeScript linting with flat config
+- **Prettier**: Code formatting
+- **TypeScript**: Type checking
+- Run: `pnpm lint && pnpm format:check && pnpm type-check`
+
+## Testing
+
+### Backend
+- Framework: JUnit 5, MockK
+- Run: `./gradlew test`
+
+### Frontend
+- Framework: Vitest, Testing Library
+- Run: `pnpm test`
+- Coverage: `pnpm test:coverage`
+
 ## Environment Variables
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `MYSQL_DATABASE` | oms | MySQL database name |
-| `MYSQL_USER` | oms | MySQL username |
-| `MYSQL_PASSWORD` | oms_password | MySQL password |
-| `MYSQL_PORT` | 3306 | MySQL port |
+| `POSTGRES_DB` | oms | PostgreSQL database name |
+| `POSTGRES_USER` | oms | PostgreSQL username |
+| `POSTGRES_PASSWORD` | oms_password | PostgreSQL password |
+| `POSTGRES_PORT` | 5432 | PostgreSQL port |
 | `MONGO_DATABASE` | oms | MongoDB database name |
 | `MONGO_USER` | oms | MongoDB username |
 | `MONGO_PASSWORD` | oms_password | MongoDB password |
@@ -236,6 +296,13 @@ order-management-system/
 | `REDIS_PORT` | 6379 | Redis port |
 | `BACKEND_PORT` | 8080 | Backend API port |
 | `FRONTEND_PORT` | 3000 | Frontend port |
+
+## Documentation
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)**: System architecture and design decisions
+- **[CONTRIBUTING.md](CONTRIBUTING.md)**: Development guidelines and contribution process
+- **[backend/BACKEND.md](backend/BACKEND.md)**: Backend-specific documentation
+- **[frontend/FRONTEND.md](frontend/FRONTEND.md)**: Frontend-specific documentation
 
 ## License
 

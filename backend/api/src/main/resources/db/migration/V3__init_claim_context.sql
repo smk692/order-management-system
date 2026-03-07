@@ -16,27 +16,29 @@ CREATE TABLE claims (
     refunded_at TIMESTAMP,
     processed_at TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by VARCHAR(100),
-    updated_by VARCHAR(100),
-    INDEX idx_claim_company (company_id),
-    INDEX idx_claim_number (claim_number),
-    INDEX idx_claim_order (order_id),
-    INDEX idx_claim_type (type),
-    INDEX idx_claim_status (status),
-    INDEX idx_claim_priority (priority)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    updated_by VARCHAR(100)
+);
+
+CREATE INDEX idx_claim_company ON claims(company_id);
+CREATE INDEX idx_claim_number ON claims(claim_number);
+CREATE INDEX idx_claim_order ON claims(order_id);
+CREATE INDEX idx_claim_type ON claims(type);
+CREATE INDEX idx_claim_status ON claims(status);
+CREATE INDEX idx_claim_priority ON claims(priority);
 
 -- Claim Items table
 CREATE TABLE claim_items (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     claim_id VARCHAR(36) NOT NULL,
     product_id VARCHAR(36) NOT NULL,
     product_name VARCHAR(200) NOT NULL,
     quantity INT NOT NULL,
     unit_price DECIMAL(15, 2) NOT NULL,
     reason TEXT,
-    INDEX idx_claim_item_claim (claim_id),
-    INDEX idx_claim_item_product (product_id),
     CONSTRAINT fk_claim_item_claim FOREIGN KEY (claim_id) REFERENCES claims(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
+
+CREATE INDEX idx_claim_item_claim ON claim_items(claim_id);
+CREATE INDEX idx_claim_item_product ON claim_items(product_id);

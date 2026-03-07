@@ -6,11 +6,11 @@ data class CreateSettlementCommand(
     val companyId: String,
     val channelId: String,
     val year: Int,
-    val month: Int
+    val month: Int,
 )
 
 data class AddSettlementItemCommand(
     val orderId: String,
     val orderAmount: BigDecimal,
-    val commissionRate: BigDecimal
+    val commissionRate: BigDecimal,
 )

@@ -1,7 +1,7 @@
 package com.oms.catalog.domain.event
 
-import com.oms.core.event.DomainEvent
 import com.oms.catalog.domain.ProductStatus
+import com.oms.core.event.DomainEvent
 
 /**
  * Event fired when a new product is created
@@ -10,7 +10,7 @@ class ProductCreatedEvent(
     val productId: String,
     val companyId: String,
     val sku: String,
-    val name: String
+    val name: String,
 ) : DomainEvent() {
     override val aggregateId: String = productId
     override val aggregateType: String = "Product"
@@ -23,7 +23,7 @@ class ProductStatusChangedEvent(
     val productId: String,
     val companyId: String,
     val previousStatus: ProductStatus,
-    val newStatus: ProductStatus
+    val newStatus: ProductStatus,
 ) : DomainEvent() {
     override val aggregateId: String = productId
     override val aggregateType: String = "Product"
@@ -36,7 +36,7 @@ class BarcodeAddedEvent(
     val productId: String,
     val companyId: String,
     val barcode: String,
-    val isMain: Boolean
+    val isMain: Boolean,
 ) : DomainEvent() {
     override val aggregateId: String = productId
     override val aggregateType: String = "Product"
@@ -48,7 +48,7 @@ class BarcodeAddedEvent(
 class ProductUpdatedEvent(
     val productId: String,
     val companyId: String,
-    val updatedFields: Set<String>
+    val updatedFields: Set<String>,
 ) : DomainEvent() {
     override val aggregateId: String = productId
     override val aggregateType: String = "Product"

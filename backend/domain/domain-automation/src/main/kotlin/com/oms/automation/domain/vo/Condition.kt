@@ -9,5 +9,5 @@ data class Condition(
     val field: String,
     @Enumerated(EnumType.STRING)
     val operator: ConditionOperator,
-    val value: String
+    val value: String,
 )

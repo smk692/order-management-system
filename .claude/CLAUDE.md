@@ -71,10 +71,10 @@ A request is **BROAD** and needs planning if ANY of:
 - You cannot immediately identify which files to modify
 
 **When BROAD REQUEST detected:**
-1. First invoke `oh-my-claude-sisyphus:explore` to understand relevant codebase areas
-2. Optionally invoke `oh-my-claude-sisyphus:oracle` for architectural guidance
-3. THEN invoke `oh-my-claude-sisyphus:prometheus` **with gathered context**
-4. Prometheus asks ONLY user-preference questions (not codebase questions)
+1. First invoke `Explore` to understand relevant codebase areas
+2. Optionally invoke `architect` for architectural guidance
+3. THEN invoke `planner` **with gathered context**
+4. Planner asks ONLY user-preference questions (not codebase questions)
 
 ## THE BOULDER NEVER STOPS
 
@@ -82,37 +82,35 @@ Like Sisyphus condemned to roll his boulder eternally, you are BOUND to your tas
 
 ## Available Subagents
 
-Use the Task tool to delegate to specialized agents. **IMPORTANT: Always use the full plugin-prefixed name** (e.g., `oh-my-claude-sisyphus:oracle`) to avoid duplicate agent calls and wasted tokens:
+Use the Task tool to delegate to specialized agents:
 
 | Agent | Model | Purpose | When to Use |
 |-------|-------|---------|-------------|
-| `oh-my-claude-sisyphus:oracle` | Opus | Architecture & debugging | Complex problems, root cause analysis |
-| `oh-my-claude-sisyphus:librarian` | Sonnet | Documentation & research | Finding docs, understanding code |
-| `oh-my-claude-sisyphus:explore` | Haiku | Fast search | Quick file/pattern searches |
-| `oh-my-claude-sisyphus:frontend-engineer` | Sonnet | UI/UX | Component design, styling |
-| `oh-my-claude-sisyphus:document-writer` | Haiku | Documentation | README, API docs, comments |
-| `oh-my-claude-sisyphus:multimodal-looker` | Sonnet | Visual analysis | Screenshots, diagrams |
-| `oh-my-claude-sisyphus:momus` | Opus | Plan review | Critical evaluation of plans |
-| `oh-my-claude-sisyphus:metis` | Opus | Pre-planning | Hidden requirements, risk analysis |
-| `oh-my-claude-sisyphus:sisyphus-junior` | Sonnet | Focused execution | Direct task implementation |
-| `oh-my-claude-sisyphus:prometheus` | Opus | Strategic planning | Creating comprehensive work plans |
-| `oh-my-claude-sisyphus:qa-tester` | Sonnet | CLI testing | Interactive CLI/service testing with tmux |
+| `architect` | Opus | Architecture & debugging | Complex problems, root cause analysis |
+| `document-specialist` | Sonnet | Documentation & research | Finding docs, understanding code |
+| `explore` | Haiku | Fast search | Quick file/pattern searches |
+| `designer` | Sonnet | UI/UX | Component design, styling |
+| `writer` | Haiku | Documentation | README, API docs, comments |
+| `general-purpose` | Sonnet | Visual analysis | Screenshots, diagrams |
+| `critic` | Opus | Plan review | Critical evaluation of plans |
+| `analyst` | Opus | Pre-planning | Hidden requirements, risk analysis |
+| `executor` | Sonnet | Focused execution | Direct task implementation |
+| `planner` | Opus | Strategic planning | Creating comprehensive work plans |
+| `qa-tester` | Sonnet | CLI testing | Interactive CLI/service testing with tmux |
 
 ### Smart Model Routing (SAVE TOKENS)
 
 **Choose tier based on task complexity: LOW (haiku) → MEDIUM (sonnet) → HIGH (opus)**
 
-All agent names require the `oh-my-claude-sisyphus:` prefix when calling via Task tool:
-
 | Domain | LOW (Haiku) | MEDIUM (Sonnet) | HIGH (Opus) |
 |--------|-------------|-----------------|-------------|
-| **Analysis** | `oh-my-claude-sisyphus:oracle-low` | `oh-my-claude-sisyphus:oracle-medium` | `oh-my-claude-sisyphus:oracle` |
-| **Execution** | `oh-my-claude-sisyphus:sisyphus-junior-low` | `oh-my-claude-sisyphus:sisyphus-junior` | `oh-my-claude-sisyphus:sisyphus-junior-high` |
-| **Search** | `oh-my-claude-sisyphus:explore` | `oh-my-claude-sisyphus:explore-medium` | - |
-| **Research** | `oh-my-claude-sisyphus:librarian-low` | `oh-my-claude-sisyphus:librarian` | - |
-| **Frontend** | `oh-my-claude-sisyphus:frontend-engineer-low` | `oh-my-claude-sisyphus:frontend-engineer` | `oh-my-claude-sisyphus:frontend-engineer-high` |
-| **Docs** | `oh-my-claude-sisyphus:document-writer` | - | - |
-| **Planning** | - | - | `oh-my-claude-sisyphus:prometheus`, `oh-my-claude-sisyphus:momus`, `oh-my-claude-sisyphus:metis` |
+| **Analysis** | `debugger` | `debugger` | `architect` |
+| **Execution** | `executor` (haiku) | `executor` | `deep-executor` |
+| **Search** | `explore` | `Explore` | - |
+| **Research** | `document-specialist` | `document-specialist` | - |
+| **Frontend** | `designer` (haiku) | `designer` | `designer` (opus) |
+| **Docs** | `writer` | - | - |
+| **Planning** | - | - | `planner`, `critic`, `analyst` |
 
 **Use LOW for simple lookups, MEDIUM for standard work, HIGH for complex reasoning.**
 
@@ -197,12 +195,12 @@ Before invoking Prometheus, gather codebase context:
 
 1. **Invoke explore agent** to gather codebase context:
 ```
-Task(subagent_type="oh-my-claude-sisyphus:explore", prompt="Find all files and patterns related to: {user request}. Return key files, existing implementations, and patterns.")
+Task(subagent_type="explore", prompt="Find all files and patterns related to: {user request}. Return key files, existing implementations, and patterns.")
 ```
 
-2. **Optionally invoke oracle** for architectural overview (if complex):
+2. **Optionally invoke architect** for architectural overview (if complex):
 ```
-Task(subagent_type="oh-my-claude-sisyphus:oracle", prompt="Analyze architecture for: {user request}. Identify patterns, dependencies, and constraints.")
+Task(subagent_type="architect", prompt="Analyze architecture for: {user request}. Identify patterns, dependencies, and constraints.")
 ```
 
 ### Invoking Prometheus With Context
@@ -210,14 +208,14 @@ Task(subagent_type="oh-my-claude-sisyphus:oracle", prompt="Analyze architecture 
 Pass pre-gathered context TO Prometheus so it doesn't ask codebase questions:
 
 ```
-Task(subagent_type="oh-my-claude-sisyphus:prometheus", prompt="""
+Task(subagent_type="planner", prompt="""
 ## Pre-Gathered Codebase Context
 
 ### Relevant Files (from explore):
 {explore results}
 
-### Architecture Notes (from oracle):
-{oracle analysis if gathered}
+### Architecture Notes (from architect):
+{architect analysis if gathered}
 
 ## User Request
 {original request}
@@ -239,8 +237,8 @@ Task(subagent_type="oh-my-claude-sisyphus:prometheus", prompt="""
 
 | Without Context Brokering | With Context Brokering |
 |---------------------------|------------------------|
-| Prometheus asks: "What patterns exist in the codebase?" | Prometheus receives: "Auth uses JWT pattern in src/auth/" |
-| Prometheus asks: "Where is authentication implemented?" | Prometheus asks: "What's your timeline for this feature?" |
+| Planner asks: "What patterns exist in the codebase?" | Planner receives: "Auth uses JWT pattern in src/auth/" |
+| Planner asks: "Where is authentication implemented?" | Planner asks: "What's your timeline for this feature?" |
 | User must research their own codebase | User only answers preference questions |
 
 **This dramatically improves planning UX** by ensuring the user is only asked questions that require human judgment.

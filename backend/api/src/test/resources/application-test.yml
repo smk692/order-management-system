@@ -1,0 +1,39 @@
+spring:
+  # JPA Configuration for tests
+  jpa:
+    hibernate:
+      ddl-auto: create-drop  # Recreate schema for each test run
+    show-sql: false          # Don't clutter test output with SQL
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: false
+        jdbc:
+          batch_size: 20
+
+  # Redis configuration (will be overridden by Testcontainers)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  # MongoDB configuration (will be overridden by Testcontainers)
+  data.mongodb:
+    database: oms_test
+
+# Logging configuration for tests
+logging:
+  level:
+    com.oms: DEBUG                    # Our application code
+    org.springframework: INFO         # Spring framework
+    org.hibernate: INFO               # Hibernate ORM
+    org.testcontainers: INFO          # Testcontainers
+    io.lettuce: WARN                  # Redis client
+    org.mongodb: WARN                 # MongoDB driver
+    org.springframework.test: DEBUG   # Spring Test framework
+
+# Disable banner in tests
+spring.main.banner-mode: off
+
+# Test-specific thread configuration
+spring.threads.virtual.enabled: true

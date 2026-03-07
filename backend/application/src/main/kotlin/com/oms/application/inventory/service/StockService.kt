@@ -5,8 +5,8 @@ import com.oms.inventory.domain.Stock
 import com.oms.inventory.domain.StockMovement
 import com.oms.inventory.domain.vo.MovementType
 import com.oms.inventory.domain.vo.StockStatus
-import com.oms.inventory.repository.StockRepository
 import com.oms.inventory.repository.StockMovementRepository
+import com.oms.inventory.repository.StockRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
@@ -18,29 +18,30 @@ import java.util.UUID
 @Transactional
 class StockService(
     private val stockRepository: StockRepository,
-    private val movementRepository: StockMovementRepository
+    private val movementRepository: StockMovementRepository,
 ) {
-
     /**
      * Create a new stock entry
      */
     fun createStock(command: CreateStockCommand): StockResult {
         // Check if stock already exists for this product and warehouse
-        val existing = stockRepository.findByProductIdAndWarehouseId(
-            command.productId,
-            command.warehouseId
-        )
+        val existing =
+            stockRepository.findByProductIdAndWarehouseId(
+                command.productId,
+                command.warehouseId,
+            )
         require(existing == null) {
             "Stock already exists for product ${command.productId} in warehouse ${command.warehouseId}"
         }
 
-        val stock = Stock.create(
-            companyId = command.companyId,
-            productId = command.productId,
-            warehouseId = command.warehouseId,
-            initialQuantity = command.initialQuantity,
-            safetyStock = command.safetyStock
-        )
+        val stock =
+            Stock.create(
+                companyId = command.companyId,
+                productId = command.productId,
+                warehouseId = command.warehouseId,
+                initialQuantity = command.initialQuantity,
+                safetyStock = command.safetyStock,
+            )
 
         val savedStock = stockRepository.save(stock)
 
@@ -52,7 +53,7 @@ class StockService(
                 quantity = command.initialQuantity,
                 beforeTotal = 0,
                 afterTotal = command.initialQuantity,
-                reason = "Initial stock"
+                reason = "Initial stock",
             )
         }
 
@@ -64,8 +65,9 @@ class StockService(
      */
     @Transactional(readOnly = true)
     fun getStock(stockId: UUID): StockResult {
-        val stock = stockRepository.findById(stockId)
-            ?: throw IllegalArgumentException("Stock not found: $stockId")
+        val stock =
+            stockRepository.findById(stockId)
+                ?: throw IllegalArgumentException("Stock not found: $stockId")
         return toStockResult(stock)
     }
 
@@ -73,9 +75,13 @@ class StockService(
      * Get stock by product and warehouse
      */
     @Transactional(readOnly = true)
-    fun getStockByProductAndWarehouse(productId: String, warehouseId: String): StockResult? {
-        val stock = stockRepository.findByProductIdAndWarehouseId(productId, warehouseId)
-            ?: return null
+    fun getStockByProductAndWarehouse(
+        productId: String,
+        warehouseId: String,
+    ): StockResult? {
+        val stock =
+            stockRepository.findByProductIdAndWarehouseId(productId, warehouseId)
+                ?: return null
         return toStockResult(stock)
     }
 
@@ -92,7 +98,10 @@ class StockService(
      * Get stocks by status
      */
     @Transactional(readOnly = true)
-    fun getStocksByCompanyAndStatus(companyId: UUID, status: StockStatus): List<StockResult> {
+    fun getStocksByCompanyAndStatus(
+        companyId: UUID,
+        status: StockStatus,
+    ): List<StockResult> {
         return stockRepository.findByCompanyIdAndStatus(companyId, status)
             .map { toStockResult(it) }
     }
@@ -110,8 +119,9 @@ class StockService(
      * Receive inventory (입고)
      */
     fun receiveStock(command: ReceiveStockCommand): StockResult {
-        val stock = stockRepository.findById(command.stockId)
-            ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
+        val stock =
+            stockRepository.findById(command.stockId)
+                ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
 
         val beforeTotal = stock.total
         stock.receive(command.quantity)
@@ -123,7 +133,7 @@ class StockService(
             quantity = command.quantity,
             beforeTotal = beforeTotal,
             afterTotal = savedStock.total,
-            reason = "Stock received"
+            reason = "Stock received",
         )
 
         return toStockResult(savedStock)
@@ -133,8 +143,9 @@ class StockService(
      * Reserve stock for an order
      */
     fun reserveStock(command: ReserveStockCommand): StockResult {
-        val stock = stockRepository.findById(command.stockId)
-            ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
+        val stock =
+            stockRepository.findById(command.stockId)
+                ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
 
         val beforeTotal = stock.total
         stock.reserve(command.quantity, command.orderId)
@@ -147,7 +158,7 @@ class StockService(
             beforeTotal = beforeTotal,
             afterTotal = savedStock.total,
             referenceId = command.orderId,
-            reason = "Reserved for order"
+            reason = "Reserved for order",
         )
 
         return toStockResult(savedStock)
@@ -157,8 +168,9 @@ class StockService(
      * Release stock reservation
      */
     fun releaseStock(command: ReleaseStockCommand): StockResult {
-        val stock = stockRepository.findById(command.stockId)
-            ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
+        val stock =
+            stockRepository.findById(command.stockId)
+                ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
 
         val beforeTotal = stock.total
         stock.release(command.quantity)
@@ -170,7 +182,7 @@ class StockService(
             quantity = command.quantity,
             beforeTotal = beforeTotal,
             afterTotal = savedStock.total,
-            reason = "Reservation released"
+            reason = "Reservation released",
         )
 
         return toStockResult(savedStock)
@@ -180,8 +192,9 @@ class StockService(
      * Ship stock (출고)
      */
     fun shipStock(command: ShipStockCommand): StockResult {
-        val stock = stockRepository.findById(command.stockId)
-            ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
+        val stock =
+            stockRepository.findById(command.stockId)
+                ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
 
         val beforeTotal = stock.total
         stock.ship(command.quantity, command.orderId)
@@ -194,7 +207,7 @@ class StockService(
             beforeTotal = beforeTotal,
             afterTotal = savedStock.total,
             referenceId = command.orderId,
-            reason = "Stock shipped"
+            reason = "Stock shipped",
         )
 
         return toStockResult(savedStock)
@@ -204,8 +217,9 @@ class StockService(
      * Adjust stock manually
      */
     fun adjustStock(command: AdjustStockCommand): StockResult {
-        val stock = stockRepository.findById(command.stockId)
-            ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
+        val stock =
+            stockRepository.findById(command.stockId)
+                ?: throw IllegalArgumentException("Stock not found: ${command.stockId}")
 
         val beforeTotal = stock.total
         stock.adjust(command.quantity, command.reason)
@@ -217,7 +231,7 @@ class StockService(
             quantity = command.quantity,
             beforeTotal = beforeTotal,
             afterTotal = savedStock.total,
-            reason = command.reason
+            reason = command.reason,
         )
 
         return toStockResult(savedStock)
@@ -230,18 +244,19 @@ class StockService(
         beforeTotal: Int,
         afterTotal: Int,
         referenceId: String? = null,
-        reason: String? = null
+        reason: String? = null,
     ) {
-        val movement = StockMovement.record(
-            companyId = stock.companyId,
-            stockId = UUID.fromString(stock.id),
-            type = type,
-            quantity = quantity,
-            beforeTotal = beforeTotal,
-            afterTotal = afterTotal,
-            referenceId = referenceId,
-            reason = reason
-        )
+        val movement =
+            StockMovement.record(
+                companyId = stock.companyId,
+                stockId = UUID.fromString(stock.id),
+                type = type,
+                quantity = quantity,
+                beforeTotal = beforeTotal,
+                afterTotal = afterTotal,
+                referenceId = referenceId,
+                reason = reason,
+            )
         movementRepository.save(movement)
     }
 
@@ -256,7 +271,7 @@ class StockService(
             reserved = stock.reserved,
             safetyStock = stock.safetyStock,
             status = stock.status,
-            channelAllocations = stock.channelAllocations.toMap()
+            channelAllocations = stock.channelAllocations.toMap(),
         )
     }
 }

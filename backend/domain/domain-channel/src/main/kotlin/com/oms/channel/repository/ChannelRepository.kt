@@ -26,10 +26,16 @@ interface ChannelRepository {
     /**
      * Find channels by company ID and status
      */
-    fun findByCompanyIdAndStatus(companyId: UUID, status: ChannelStatus): List<Channel>
+    fun findByCompanyIdAndStatus(
+        companyId: UUID,
+        status: ChannelStatus,
+    ): List<Channel>
 
     /**
      * Check if a channel with the given name exists for a company
      */
-    fun existsByNameAndCompanyId(name: String, companyId: UUID): Boolean
+    fun existsByNameAndCompanyId(
+        name: String,
+        companyId: UUID,
+    ): Boolean
 }

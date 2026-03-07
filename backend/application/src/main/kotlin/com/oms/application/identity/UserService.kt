@@ -18,16 +18,16 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class UserService(
     private val userRepository: UserRepository,
-    private val companyRepository: CompanyRepository
+    private val companyRepository: CompanyRepository,
 ) {
-
     /**
      * Invite a new user to a company
      */
     fun inviteUser(command: InviteUserCommand): UserResult {
         // Validate company exists and is active
-        val company = companyRepository.findById(command.companyId)
-            ?: throw EntityNotFoundException("Company", command.companyId)
+        val company =
+            companyRepository.findById(command.companyId)
+                ?: throw EntityNotFoundException("Company", command.companyId)
 
         if (!company.isActive()) {
             throw BusinessRuleException("Cannot invite users to inactive company")
@@ -37,7 +37,7 @@ class UserService(
         if (userRepository.existsByCompanyIdAndEmail(command.companyId, command.email)) {
             throw BusinessRuleException(
                 "Email already exists in company: ${command.email}",
-                ErrorCode.DUPLICATE_EMAIL
+                ErrorCode.DUPLICATE_EMAIL,
             )
         }
 
@@ -46,12 +46,13 @@ class UserService(
             throw BusinessRuleException("Cannot invite user as owner")
         }
 
-        val user = User.create(
-            companyId = command.companyId,
-            email = command.email,
-            name = command.name,
-            role = command.role
-        )
+        val user =
+            User.create(
+                companyId = command.companyId,
+                email = command.email,
+                name = command.name,
+                role = command.role,
+            )
         val savedUser = userRepository.save(user)
 
         return toUserResult(savedUser)
@@ -62,8 +63,9 @@ class UserService(
      */
     @Transactional(readOnly = true)
     fun getUser(userId: String): UserResult {
-        val user = userRepository.findById(userId)
-            ?: throw EntityNotFoundException("User", userId)
+        val user =
+            userRepository.findById(userId)
+                ?: throw EntityNotFoundException("User", userId)
 
         return toUserResult(user)
     }
@@ -81,8 +83,9 @@ class UserService(
      * Activate a user (after accepting invitation)
      */
     fun activateUser(userId: String): UserResult {
-        val user = userRepository.findById(userId)
-            ?: throw EntityNotFoundException("User", userId)
+        val user =
+            userRepository.findById(userId)
+                ?: throw EntityNotFoundException("User", userId)
 
         user.activate()
         val updatedUser = userRepository.save(user)
@@ -94,8 +97,9 @@ class UserService(
      * Deactivate a user
      */
     fun deactivateUser(userId: String): UserResult {
-        val user = userRepository.findById(userId)
-            ?: throw EntityNotFoundException("User", userId)
+        val user =
+            userRepository.findById(userId)
+                ?: throw EntityNotFoundException("User", userId)
 
         user.deactivate()
         val updatedUser = userRepository.save(user)
@@ -107,8 +111,9 @@ class UserService(
      * Reactivate a user
      */
     fun reactivateUser(userId: String): UserResult {
-        val user = userRepository.findById(userId)
-            ?: throw EntityNotFoundException("User", userId)
+        val user =
+            userRepository.findById(userId)
+                ?: throw EntityNotFoundException("User", userId)
 
         user.reactivate()
         val updatedUser = userRepository.save(user)
@@ -119,9 +124,13 @@ class UserService(
     /**
      * Change user role
      */
-    fun changeUserRole(userId: String, newRole: UserRole): UserResult {
-        val user = userRepository.findById(userId)
-            ?: throw EntityNotFoundException("User", userId)
+    fun changeUserRole(
+        userId: String,
+        newRole: UserRole,
+    ): UserResult {
+        val user =
+            userRepository.findById(userId)
+                ?: throw EntityNotFoundException("User", userId)
 
         user.changeRole(newRole)
         val updatedUser = userRepository.save(user)
@@ -132,9 +141,13 @@ class UserService(
     /**
      * Update user profile
      */
-    fun updateUserProfile(userId: String, command: UpdateUserCommand): UserResult {
-        val user = userRepository.findById(userId)
-            ?: throw EntityNotFoundException("User", userId)
+    fun updateUserProfile(
+        userId: String,
+        command: UpdateUserCommand,
+    ): UserResult {
+        val user =
+            userRepository.findById(userId)
+                ?: throw EntityNotFoundException("User", userId)
 
         command.name?.let { user.updateName(it) }
         command.email?.let { newEmail ->
@@ -143,7 +156,7 @@ class UserService(
             if (existingUser != null && existingUser.id != userId) {
                 throw BusinessRuleException(
                     "Email already exists in company: $newEmail",
-                    ErrorCode.DUPLICATE_EMAIL
+                    ErrorCode.DUPLICATE_EMAIL,
                 )
             }
             user.updateEmail(newEmail)
@@ -160,7 +173,7 @@ class UserService(
             email = user.email.value,
             name = user.name,
             role = user.role,
-            status = user.status
+            status = user.status,
         )
     }
 }
@@ -172,7 +185,7 @@ data class InviteUserCommand(
     val companyId: String,
     val email: String,
     val name: String,
-    val role: UserRole = UserRole.VIEWER
+    val role: UserRole = UserRole.VIEWER,
 )
 
 /**
@@ -180,7 +193,7 @@ data class InviteUserCommand(
  */
 data class UpdateUserCommand(
     val name: String? = null,
-    val email: String? = null
+    val email: String? = null,
 )
 
 /**
@@ -192,5 +205,5 @@ data class UserResult(
     val email: String,
     val name: String,
     val role: UserRole,
-    val status: UserStatus
+    val status: UserStatus,
 )

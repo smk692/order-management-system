@@ -9,7 +9,6 @@ import com.oms.core.exception.EntityNotFoundException
 import com.oms.core.exception.ErrorCode
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.math.BigDecimal
 
 /**
  * Application service for Product operations
@@ -17,9 +16,8 @@ import java.math.BigDecimal
 @Service
 @Transactional
 class ProductService(
-    private val productRepository: ProductRepository
+    private val productRepository: ProductRepository,
 ) {
-
     /**
      * Create a new product
      */
@@ -28,17 +26,18 @@ class ProductService(
         if (productRepository.existsByCompanyIdAndSku(command.companyId, command.sku)) {
             throw BusinessRuleException(
                 "SKU already exists: ${command.sku}",
-                ErrorCode.DUPLICATE_SKU
+                ErrorCode.DUPLICATE_SKU,
             )
         }
 
-        val product = Product.create(
-            companyId = command.companyId,
-            sku = command.sku,
-            nameKo = command.nameKo,
-            nameEn = command.nameEn,
-            uom = command.uom
-        )
+        val product =
+            Product.create(
+                companyId = command.companyId,
+                sku = command.sku,
+                nameKo = command.nameKo,
+                nameEn = command.nameEn,
+                uom = command.uom,
+            )
 
         // Set optional fields
         command.brand?.let { product.brand = it }
@@ -69,8 +68,9 @@ class ProductService(
      */
     @Transactional(readOnly = true)
     fun getProduct(productId: String): ProductResult {
-        val product = productRepository.findById(productId)
-            ?: throw EntityNotFoundException("Product", productId)
+        val product =
+            productRepository.findById(productId)
+                ?: throw EntityNotFoundException("Product", productId)
 
         return toProductResult(product)
     }
@@ -88,7 +88,10 @@ class ProductService(
      * Search products by name
      */
     @Transactional(readOnly = true)
-    fun searchProducts(companyId: String, keyword: String): List<ProductResult> {
+    fun searchProducts(
+        companyId: String,
+        keyword: String,
+    ): List<ProductResult> {
         return productRepository.searchByName(companyId, keyword)
             .map { toProductResult(it) }
     }
@@ -96,9 +99,13 @@ class ProductService(
     /**
      * Update product
      */
-    fun updateProduct(productId: String, command: UpdateProductCommand): ProductResult {
-        val product = productRepository.findById(productId)
-            ?: throw EntityNotFoundException("Product", productId)
+    fun updateProduct(
+        productId: String,
+        command: UpdateProductCommand,
+    ): ProductResult {
+        val product =
+            productRepository.findById(productId)
+                ?: throw EntityNotFoundException("Product", productId)
 
         command.nameKo?.let { product.name = LocalizedString(ko = it, en = command.nameEn ?: product.name.en) }
         command.brand?.let { product.brand = it }
@@ -128,15 +135,20 @@ class ProductService(
     /**
      * Add barcode to product
      */
-    fun addBarcode(productId: String, barcode: String, isMain: Boolean = false): ProductResult {
-        val product = productRepository.findById(productId)
-            ?: throw EntityNotFoundException("Product", productId)
+    fun addBarcode(
+        productId: String,
+        barcode: String,
+        isMain: Boolean = false,
+    ): ProductResult {
+        val product =
+            productRepository.findById(productId)
+                ?: throw EntityNotFoundException("Product", productId)
 
         // Check for duplicate barcode
         if (productRepository.existsByCompanyIdAndBarcode(product.companyId, barcode)) {
             throw BusinessRuleException(
                 "Barcode already exists: $barcode",
-                ErrorCode.DUPLICATE_BARCODE
+                ErrorCode.DUPLICATE_BARCODE,
             )
         }
 
@@ -149,9 +161,13 @@ class ProductService(
     /**
      * Set main barcode
      */
-    fun setMainBarcode(productId: String, barcode: String): ProductResult {
-        val product = productRepository.findById(productId)
-            ?: throw EntityNotFoundException("Product", productId)
+    fun setMainBarcode(
+        productId: String,
+        barcode: String,
+    ): ProductResult {
+        val product =
+            productRepository.findById(productId)
+                ?: throw EntityNotFoundException("Product", productId)
 
         product.setMainBarcode(barcode)
         val updatedProduct = productRepository.save(product)
@@ -162,18 +178,23 @@ class ProductService(
     /**
      * Add customs strategy
      */
-    fun addCustomsStrategy(productId: String, command: AddCustomsStrategyCommand): ProductResult {
-        val product = productRepository.findById(productId)
-            ?: throw EntityNotFoundException("Product", productId)
+    fun addCustomsStrategy(
+        productId: String,
+        command: AddCustomsStrategyCommand,
+    ): ProductResult {
+        val product =
+            productRepository.findById(productId)
+                ?: throw EntityNotFoundException("Product", productId)
 
-        val strategy = CustomsStrategy.create(
-            countryCode = command.countryCode,
-            localHsCode = command.localHsCode,
-            invoiceName = command.invoiceName,
-            dutyRate = command.dutyRate,
-            requiredDocs = command.requiredDocs,
-            complianceAlert = command.complianceAlert
-        )
+        val strategy =
+            CustomsStrategy.create(
+                countryCode = command.countryCode,
+                localHsCode = command.localHsCode,
+                invoiceName = command.invoiceName,
+                dutyRate = command.dutyRate,
+                requiredDocs = command.requiredDocs,
+                complianceAlert = command.complianceAlert,
+            )
 
         product.addCustomsStrategy(strategy)
         val updatedProduct = productRepository.save(product)
@@ -185,8 +206,9 @@ class ProductService(
      * Activate product
      */
     fun activateProduct(productId: String): ProductResult {
-        val product = productRepository.findById(productId)
-            ?: throw EntityNotFoundException("Product", productId)
+        val product =
+            productRepository.findById(productId)
+                ?: throw EntityNotFoundException("Product", productId)
 
         product.activate()
         val updatedProduct = productRepository.save(product)
@@ -198,8 +220,9 @@ class ProductService(
      * Deactivate product
      */
     fun deactivateProduct(productId: String): ProductResult {
-        val product = productRepository.findById(productId)
-            ?: throw EntityNotFoundException("Product", productId)
+        val product =
+            productRepository.findById(productId)
+                ?: throw EntityNotFoundException("Product", productId)
 
         product.deactivate()
         val updatedProduct = productRepository.save(product)
@@ -220,7 +243,7 @@ class ProductService(
             basePrice = product.basePrice,
             status = product.status,
             barcodes = product.barcodes.map { BarcodeResult(it.code, it.isMain) },
-            mainBarcode = product.getMainBarcode()?.code
+            mainBarcode = product.getMainBarcode()?.code,
         )
     }
 }
@@ -247,7 +270,7 @@ data class CreateProductCommand(
     val countryOfOrigin: String? = null,
     val material: String? = null,
     val manufacturer: String? = null,
-    val manufacturerAddress: String? = null
+    val manufacturerAddress: String? = null,
 )
 
 /**
@@ -270,7 +293,7 @@ data class UpdateProductCommand(
     val countryOfOrigin: String? = null,
     val material: String? = null,
     val manufacturer: String? = null,
-    val manufacturerAddress: String? = null
+    val manufacturerAddress: String? = null,
 )
 
 /**
@@ -282,7 +305,7 @@ data class AddCustomsStrategyCommand(
     val invoiceName: String,
     val dutyRate: String? = null,
     val requiredDocs: List<String> = emptyList(),
-    val complianceAlert: String? = null
+    val complianceAlert: String? = null,
 )
 
 /**
@@ -300,7 +323,7 @@ data class ProductResult(
     val basePrice: Money?,
     val status: ProductStatus,
     val barcodes: List<BarcodeResult>,
-    val mainBarcode: String?
+    val mainBarcode: String?,
 )
 
 /**
@@ -308,5 +331,5 @@ data class ProductResult(
  */
 data class BarcodeResult(
     val code: String,
-    val isMain: Boolean
+    val isMain: Boolean,
 )

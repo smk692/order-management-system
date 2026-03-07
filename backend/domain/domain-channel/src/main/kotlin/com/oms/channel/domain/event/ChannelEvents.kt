@@ -4,7 +4,6 @@ import com.oms.channel.domain.vo.ChannelStatus
 import com.oms.channel.domain.vo.ChannelType
 import com.oms.channel.domain.vo.MappingRole
 import com.oms.core.event.DomainEvent
-import java.time.Instant
 import java.util.UUID
 
 /**
@@ -20,7 +19,7 @@ sealed class ChannelEvent : DomainEvent() {
 data class ChannelCreatedEvent(
     override val aggregateId: String,
     val companyId: UUID,
-    val type: ChannelType
+    val type: ChannelType,
 ) : ChannelEvent()
 
 /**
@@ -29,7 +28,7 @@ data class ChannelCreatedEvent(
 data class ChannelStatusChangedEvent(
     override val aggregateId: String,
     val oldStatus: ChannelStatus,
-    val newStatus: ChannelStatus
+    val newStatus: ChannelStatus,
 ) : ChannelEvent()
 
 /**
@@ -37,7 +36,7 @@ data class ChannelStatusChangedEvent(
  */
 data class WarehouseCreatedEvent(
     override val aggregateId: String,
-    val companyId: UUID
+    val companyId: UUID,
 ) : ChannelEvent()
 
 /**
@@ -47,5 +46,5 @@ data class WarehouseMappingChangedEvent(
     override val aggregateId: String,
     val channelId: String,
     val warehouseId: String,
-    val role: MappingRole
+    val role: MappingRole,
 ) : ChannelEvent()

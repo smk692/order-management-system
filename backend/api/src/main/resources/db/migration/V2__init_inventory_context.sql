@@ -13,14 +13,15 @@ CREATE TABLE stocks (
     safety_stock INT NOT NULL DEFAULT 0,
     status VARCHAR(20) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by VARCHAR(100),
     updated_by VARCHAR(100),
-    INDEX idx_stock_company (company_id),
-    INDEX idx_stock_product_warehouse (product_id, warehouse_id),
-    INDEX idx_stock_status (status),
-    UNIQUE KEY uk_stock_product_warehouse (product_id, warehouse_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    CONSTRAINT uk_stock_product_warehouse UNIQUE (product_id, warehouse_id)
+);
+
+CREATE INDEX idx_stock_company ON stocks(company_id);
+CREATE INDEX idx_stock_product_warehouse ON stocks(product_id, warehouse_id);
+CREATE INDEX idx_stock_status ON stocks(status);
 
 -- Stock channel allocations table
 CREATE TABLE stock_channel_allocations (
@@ -29,7 +30,7 @@ CREATE TABLE stock_channel_allocations (
     quantity INT NOT NULL DEFAULT 0,
     PRIMARY KEY (stock_id, channel_id),
     CONSTRAINT fk_allocation_stock FOREIGN KEY (stock_id) REFERENCES stocks(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
 
 -- Stock movements table (audit trail)
 CREATE TABLE stock_movements (
@@ -43,12 +44,13 @@ CREATE TABLE stock_movements (
     reference_id VARCHAR(100),
     reason TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by VARCHAR(100),
     updated_by VARCHAR(100),
-    INDEX idx_movement_company (company_id),
-    INDEX idx_movement_stock (stock_id),
-    INDEX idx_movement_reference (reference_id),
-    INDEX idx_movement_type (type),
     CONSTRAINT fk_movement_stock FOREIGN KEY (stock_id) REFERENCES stocks(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
+
+CREATE INDEX idx_movement_company ON stock_movements(company_id);
+CREATE INDEX idx_movement_stock ON stock_movements(stock_id);
+CREATE INDEX idx_movement_reference ON stock_movements(reference_id);
+CREATE INDEX idx_movement_type ON stock_movements(type);

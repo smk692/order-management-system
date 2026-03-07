@@ -11,7 +11,6 @@ import java.time.Instant
  */
 @MappedSuperclass
 abstract class AuditableEntity {
-
     @Column(name = "created_at", nullable = false, updatable = false)
     var createdAt: Instant = Instant.now()
         protected set

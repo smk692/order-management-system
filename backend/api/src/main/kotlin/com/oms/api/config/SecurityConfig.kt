@@ -14,7 +14,6 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
-
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
@@ -27,7 +26,7 @@ class SecurityConfig {
                     .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                     .requestMatchers("/api/v1/public/**").permitAll()
                     // All other endpoints require authentication (disabled for development)
-                    .anyRequest().permitAll()  // TODO: Change to .authenticated() in production
+                    .anyRequest().permitAll() // TODO: Change to .authenticated() in production
             }
             .httpBasic { it.disable() }
             .formLogin { it.disable() }

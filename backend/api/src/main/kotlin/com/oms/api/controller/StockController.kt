@@ -16,14 +16,15 @@ import java.util.UUID
 @RequestMapping("/api/v1/stocks")
 class StockController(
     private val stockService: StockService,
-    private val allocationService: StockAllocationService
+    private val allocationService: StockAllocationService,
 ) {
-
     /**
      * Create a new stock entry
      */
     @PostMapping
-    fun createStock(@RequestBody command: CreateStockCommand): ResponseEntity<StockResult> {
+    fun createStock(
+        @RequestBody command: CreateStockCommand,
+    ): ResponseEntity<StockResult> {
         val result = stockService.createStock(command)
         return ResponseEntity.status(HttpStatus.CREATED).body(result)
     }
@@ -32,7 +33,9 @@ class StockController(
      * Get stock by ID
      */
     @GetMapping("/{id}")
-    fun getStock(@PathVariable id: String): ResponseEntity<StockResult> {
+    fun getStock(
+        @PathVariable id: String,
+    ): ResponseEntity<StockResult> {
         val result = stockService.getStock(UUID.fromString(id))
         return ResponseEntity.ok(result)
     }
@@ -43,10 +46,11 @@ class StockController(
     @GetMapping("/product/{productId}/warehouse/{warehouseId}")
     fun getStockByProductAndWarehouse(
         @PathVariable productId: String,
-        @PathVariable warehouseId: String
+        @PathVariable warehouseId: String,
     ): ResponseEntity<StockResult> {
-        val result = stockService.getStockByProductAndWarehouse(productId, warehouseId)
-            ?: return ResponseEntity.notFound().build()
+        val result =
+            stockService.getStockByProductAndWarehouse(productId, warehouseId)
+                ?: return ResponseEntity.notFound().build()
         return ResponseEntity.ok(result)
     }
 
@@ -54,7 +58,9 @@ class StockController(
      * Get all stocks for a company
      */
     @GetMapping("/company/{companyId}")
-    fun getStocksByCompany(@PathVariable companyId: String): ResponseEntity<List<StockResult>> {
+    fun getStocksByCompany(
+        @PathVariable companyId: String,
+    ): ResponseEntity<List<StockResult>> {
         val result = stockService.getStocksByCompany(UUID.fromString(companyId))
         return ResponseEntity.ok(result)
     }
@@ -65,7 +71,7 @@ class StockController(
     @GetMapping("/company/{companyId}/status/{status}")
     fun getStocksByCompanyAndStatus(
         @PathVariable companyId: String,
-        @PathVariable status: StockStatus
+        @PathVariable status: StockStatus,
     ): ResponseEntity<List<StockResult>> {
         val result = stockService.getStocksByCompanyAndStatus(UUID.fromString(companyId), status)
         return ResponseEntity.ok(result)
@@ -75,7 +81,9 @@ class StockController(
      * Get low stock items for a company
      */
     @GetMapping("/company/{companyId}/low-stock")
-    fun getLowStockByCompany(@PathVariable companyId: String): ResponseEntity<List<StockResult>> {
+    fun getLowStockByCompany(
+        @PathVariable companyId: String,
+    ): ResponseEntity<List<StockResult>> {
         val result = stockService.getLowStockByCompany(UUID.fromString(companyId))
         return ResponseEntity.ok(result)
     }
@@ -86,12 +94,13 @@ class StockController(
     @PostMapping("/{id}/receive")
     fun receiveStock(
         @PathVariable id: String,
-        @RequestBody request: ReceiveStockRequest
+        @RequestBody request: ReceiveStockRequest,
     ): ResponseEntity<StockResult> {
-        val command = ReceiveStockCommand(
-            stockId = UUID.fromString(id),
-            quantity = request.quantity
-        )
+        val command =
+            ReceiveStockCommand(
+                stockId = UUID.fromString(id),
+                quantity = request.quantity,
+            )
         val result = stockService.receiveStock(command)
         return ResponseEntity.ok(result)
     }
@@ -102,13 +111,14 @@ class StockController(
     @PostMapping("/{id}/reserve")
     fun reserveStock(
         @PathVariable id: String,
-        @RequestBody request: ReserveStockRequest
+        @RequestBody request: ReserveStockRequest,
     ): ResponseEntity<StockResult> {
-        val command = ReserveStockCommand(
-            stockId = UUID.fromString(id),
-            quantity = request.quantity,
-            orderId = request.orderId
-        )
+        val command =
+            ReserveStockCommand(
+                stockId = UUID.fromString(id),
+                quantity = request.quantity,
+                orderId = request.orderId,
+            )
         val result = stockService.reserveStock(command)
         return ResponseEntity.ok(result)
     }
@@ -119,12 +129,13 @@ class StockController(
     @PostMapping("/{id}/release")
     fun releaseStock(
         @PathVariable id: String,
-        @RequestBody request: ReleaseStockRequest
+        @RequestBody request: ReleaseStockRequest,
     ): ResponseEntity<StockResult> {
-        val command = ReleaseStockCommand(
-            stockId = UUID.fromString(id),
-            quantity = request.quantity
-        )
+        val command =
+            ReleaseStockCommand(
+                stockId = UUID.fromString(id),
+                quantity = request.quantity,
+            )
         val result = stockService.releaseStock(command)
         return ResponseEntity.ok(result)
     }
@@ -135,13 +146,14 @@ class StockController(
     @PostMapping("/{id}/ship")
     fun shipStock(
         @PathVariable id: String,
-        @RequestBody request: ShipStockRequest
+        @RequestBody request: ShipStockRequest,
     ): ResponseEntity<StockResult> {
-        val command = ShipStockCommand(
-            stockId = UUID.fromString(id),
-            quantity = request.quantity,
-            orderId = request.orderId
-        )
+        val command =
+            ShipStockCommand(
+                stockId = UUID.fromString(id),
+                quantity = request.quantity,
+                orderId = request.orderId,
+            )
         val result = stockService.shipStock(command)
         return ResponseEntity.ok(result)
     }
@@ -152,13 +164,14 @@ class StockController(
     @PostMapping("/{id}/adjust")
     fun adjustStock(
         @PathVariable id: String,
-        @RequestBody request: AdjustStockRequest
+        @RequestBody request: AdjustStockRequest,
     ): ResponseEntity<StockResult> {
-        val command = AdjustStockCommand(
-            stockId = UUID.fromString(id),
-            quantity = request.quantity,
-            reason = request.reason
-        )
+        val command =
+            AdjustStockCommand(
+                stockId = UUID.fromString(id),
+                quantity = request.quantity,
+                reason = request.reason,
+            )
         val result = stockService.adjustStock(command)
         return ResponseEntity.ok(result)
     }
@@ -169,13 +182,14 @@ class StockController(
     @PostMapping("/{id}/allocate")
     fun allocateToChannel(
         @PathVariable id: String,
-        @RequestBody request: AllocateToChannelRequest
+        @RequestBody request: AllocateToChannelRequest,
     ): ResponseEntity<StockResult> {
-        val command = AllocateToChannelCommand(
-            stockId = UUID.fromString(id),
-            channelId = request.channelId,
-            quantity = request.quantity
-        )
+        val command =
+            AllocateToChannelCommand(
+                stockId = UUID.fromString(id),
+                channelId = request.channelId,
+                quantity = request.quantity,
+            )
         val result = allocationService.allocateToChannel(command)
         return ResponseEntity.ok(result)
     }
@@ -186,13 +200,14 @@ class StockController(
     @PostMapping("/{id}/deallocate")
     fun deallocateFromChannel(
         @PathVariable id: String,
-        @RequestBody request: DeallocateFromChannelRequest
+        @RequestBody request: DeallocateFromChannelRequest,
     ): ResponseEntity<StockResult> {
-        val command = DeallocateFromChannelCommand(
-            stockId = UUID.fromString(id),
-            channelId = request.channelId,
-            quantity = request.quantity
-        )
+        val command =
+            DeallocateFromChannelCommand(
+                stockId = UUID.fromString(id),
+                channelId = request.channelId,
+                quantity = request.quantity,
+            )
         val result = allocationService.deallocateFromChannel(command)
         return ResponseEntity.ok(result)
     }
@@ -200,9 +215,15 @@ class StockController(
 
 // Request DTOs for API endpoints
 data class ReceiveStockRequest(val quantity: Int)
+
 data class ReserveStockRequest(val quantity: Int, val orderId: String? = null)
+
 data class ReleaseStockRequest(val quantity: Int)
+
 data class ShipStockRequest(val quantity: Int, val orderId: String? = null)
+
 data class AdjustStockRequest(val quantity: Int, val reason: String)
+
 data class AllocateToChannelRequest(val channelId: String, val quantity: Int)
+
 data class DeallocateFromChannelRequest(val channelId: String, val quantity: Int)

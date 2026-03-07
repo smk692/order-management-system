@@ -7,12 +7,10 @@ import jakarta.persistence.Embeddable
 data class ChannelCredentials(
     @Column(name = "api_key", nullable = false, length = 255)
     val apiKey: String,
-
     @Column(name = "secret_key", nullable = false, length = 255)
     val secretKey: String,
-
     @Column(name = "additional_config", columnDefinition = "TEXT")
-    val additionalConfig: String? = null
+    val additionalConfig: String? = null,
 ) {
     init {
         require(apiKey.isNotBlank()) { "API key cannot be blank" }

@@ -8,7 +8,7 @@ import java.util.UUID
  */
 abstract class DomainEvent(
     val eventId: String = UUID.randomUUID().toString(),
-    val occurredAt: Instant = Instant.now()
+    val occurredAt: Instant = Instant.now(),
 ) {
     abstract val aggregateId: String
     abstract val aggregateType: String
@@ -26,7 +26,6 @@ abstract class DomainEvent(
  * Base class for aggregate roots that can publish domain events
  */
 abstract class AggregateRoot {
-
     @Transient
     private val domainEvents: MutableList<DomainEvent> = mutableListOf()
 

@@ -14,19 +14,19 @@ import java.util.UUID
 @Service
 @Transactional
 class AutomationRuleService(
-    private val automationRuleRepository: AutomationRuleRepository
+    private val automationRuleRepository: AutomationRuleRepository,
 ) {
-
     /**
      * Create a new automation rule
      */
     fun createRule(command: CreateRuleCommand): AutomationRuleResult {
-        val rule = AutomationRule(
-            name = command.name,
-            description = command.description,
-            trigger = command.trigger.toDomain(),
-            priority = command.priority
-        )
+        val rule =
+            AutomationRule(
+                name = command.name,
+                description = command.description,
+                trigger = command.trigger.toDomain(),
+                priority = command.priority,
+            )
 
         rule.assignToCompany(command.companyId.toString())
 
@@ -47,8 +47,9 @@ class AutomationRuleService(
      */
     @Transactional(readOnly = true)
     fun getRule(id: UUID): AutomationRuleResult {
-        val rule = automationRuleRepository.findById(id)
-            ?: throw IllegalArgumentException("Automation rule not found: $id")
+        val rule =
+            automationRuleRepository.findById(id)
+                ?: throw IllegalArgumentException("Automation rule not found: $id")
         return toRuleResult(rule)
     }
 
@@ -66,7 +67,10 @@ class AutomationRuleService(
      * Get active rules by trigger type for a company
      */
     @Transactional(readOnly = true)
-    fun getActiveRulesByTrigger(companyId: UUID, triggerType: TriggerType): List<AutomationRuleResult> {
+    fun getActiveRulesByTrigger(
+        companyId: UUID,
+        triggerType: TriggerType,
+    ): List<AutomationRuleResult> {
         return automationRuleRepository.findByCompanyIdAndTriggerType(companyId, triggerType)
             .filter { it.enabled }
             .sortedByDescending { it.priority }
@@ -77,8 +81,9 @@ class AutomationRuleService(
      * Enable a rule
      */
     fun enableRule(id: UUID): AutomationRuleResult {
-        val rule = automationRuleRepository.findById(id)
-            ?: throw IllegalArgumentException("Automation rule not found: $id")
+        val rule =
+            automationRuleRepository.findById(id)
+                ?: throw IllegalArgumentException("Automation rule not found: $id")
 
         rule.enable()
         val savedRule = automationRuleRepository.save(rule)
@@ -89,8 +94,9 @@ class AutomationRuleService(
      * Disable a rule
      */
     fun disableRule(id: UUID): AutomationRuleResult {
-        val rule = automationRuleRepository.findById(id)
-            ?: throw IllegalArgumentException("Automation rule not found: $id")
+        val rule =
+            automationRuleRepository.findById(id)
+                ?: throw IllegalArgumentException("Automation rule not found: $id")
 
         rule.disable()
         val savedRule = automationRuleRepository.save(rule)
@@ -100,9 +106,13 @@ class AutomationRuleService(
     /**
      * Update rule
      */
-    fun updateRule(id: UUID, command: UpdateRuleCommand): AutomationRuleResult {
-        val rule = automationRuleRepository.findById(id)
-            ?: throw IllegalArgumentException("Automation rule not found: $id")
+    fun updateRule(
+        id: UUID,
+        command: UpdateRuleCommand,
+    ): AutomationRuleResult {
+        val rule =
+            automationRuleRepository.findById(id)
+                ?: throw IllegalArgumentException("Automation rule not found: $id")
 
         rule.name = command.name
         rule.description = command.description
@@ -128,8 +138,9 @@ class AutomationRuleService(
      * Delete a rule
      */
     fun deleteRule(id: UUID) {
-        val rule = automationRuleRepository.findById(id)
-            ?: throw IllegalArgumentException("Automation rule not found: $id")
+        val rule =
+            automationRuleRepository.findById(id)
+                ?: throw IllegalArgumentException("Automation rule not found: $id")
 
         automationRuleRepository.deleteById(id)
     }
@@ -138,8 +149,9 @@ class AutomationRuleService(
      * Record rule execution
      */
     fun recordRuleExecution(id: UUID): AutomationRuleResult {
-        val rule = automationRuleRepository.findById(id)
-            ?: throw IllegalArgumentException("Automation rule not found: $id")
+        val rule =
+            automationRuleRepository.findById(id)
+                ?: throw IllegalArgumentException("Automation rule not found: $id")
 
         rule.recordExecution()
         val savedRule = automationRuleRepository.save(rule)
@@ -160,7 +172,7 @@ class AutomationRuleService(
             executionCount = rule.executionCount,
             lastExecutedAt = rule.lastExecutedAt,
             createdAt = rule.createdAt,
-            updatedAt = rule.updatedAt
+            updatedAt = rule.updatedAt,
         )
     }
 }

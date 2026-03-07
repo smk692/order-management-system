@@ -13,27 +13,33 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api/v1/readiness")
 class GlobalReadinessController(
-    private val readinessService: GlobalReadinessService
+    private val readinessService: GlobalReadinessService,
 ) {
-
     @PostMapping
-    fun createReadiness(@RequestBody request: CreateReadinessRequest): ResponseEntity<GlobalReadiness> {
-        val readiness = readinessService.createReadiness(
-            companyId = request.companyId,
-            country = request.country,
-            initialChecklist = request.initialChecklist
-        )
+    fun createReadiness(
+        @RequestBody request: CreateReadinessRequest,
+    ): ResponseEntity<GlobalReadiness> {
+        val readiness =
+            readinessService.createReadiness(
+                companyId = request.companyId,
+                country = request.country,
+                initialChecklist = request.initialChecklist,
+            )
         return ResponseEntity.status(HttpStatus.CREATED).body(readiness)
     }
 
     @GetMapping("/{id}")
-    fun getReadiness(@PathVariable id: UUID): ResponseEntity<GlobalReadiness> {
+    fun getReadiness(
+        @PathVariable id: UUID,
+    ): ResponseEntity<GlobalReadiness> {
         val readiness = readinessService.getReadiness(id)
         return ResponseEntity.ok(readiness)
     }
 
     @GetMapping("/company/{companyId}")
-    fun getReadinessByCompany(@PathVariable companyId: String): ResponseEntity<List<GlobalReadiness>> {
+    fun getReadinessByCompany(
+        @PathVariable companyId: String,
+    ): ResponseEntity<List<GlobalReadiness>> {
         val readiness = readinessService.getReadinessByCompany(companyId)
         return ResponseEntity.ok(readiness)
     }
@@ -41,17 +47,18 @@ class GlobalReadinessController(
     @GetMapping("/company/{companyId}/country/{country}")
     fun getReadinessByCountry(
         @PathVariable companyId: String,
-        @PathVariable country: String
+        @PathVariable country: String,
     ): ResponseEntity<GlobalReadiness> {
-        val readiness = readinessService.getReadinessByCountry(companyId, country)
-            ?: return ResponseEntity.notFound().build()
+        val readiness =
+            readinessService.getReadinessByCountry(companyId, country)
+                ?: return ResponseEntity.notFound().build()
         return ResponseEntity.ok(readiness)
     }
 
     @GetMapping("/company/{companyId}/status/{status}")
     fun getReadinessByStatus(
         @PathVariable companyId: String,
-        @PathVariable status: ReadinessStatus
+        @PathVariable status: ReadinessStatus,
     ): ResponseEntity<List<GlobalReadiness>> {
         val readiness = readinessService.getReadinessByStatus(companyId, status)
         return ResponseEntity.ok(readiness)
@@ -60,43 +67,47 @@ class GlobalReadinessController(
     @PutMapping("/{id}/checklist")
     fun updateChecklistItem(
         @PathVariable id: UUID,
-        @RequestBody request: UpdateChecklistItemRequest
+        @RequestBody request: UpdateChecklistItemRequest,
     ): ResponseEntity<GlobalReadiness> {
-        val readiness = readinessService.updateChecklistItem(
-            readinessId = id,
-            itemId = request.itemId,
-            category = request.category,
-            description = request.description,
-            completed = request.completed
-        )
+        val readiness =
+            readinessService.updateChecklistItem(
+                readinessId = id,
+                itemId = request.itemId,
+                category = request.category,
+                description = request.description,
+                completed = request.completed,
+            )
         return ResponseEntity.ok(readiness)
     }
 
     @PostMapping("/{id}/checklist")
     fun addChecklistItem(
         @PathVariable id: UUID,
-        @RequestBody request: AddChecklistItemRequest
+        @RequestBody request: AddChecklistItemRequest,
     ): ResponseEntity<GlobalReadiness> {
-        val readiness = readinessService.addChecklistItem(
-            readinessId = id,
-            itemId = request.itemId,
-            category = request.category,
-            description = request.description
-        )
+        val readiness =
+            readinessService.addChecklistItem(
+                readinessId = id,
+                itemId = request.itemId,
+                category = request.category,
+                description = request.description,
+            )
         return ResponseEntity.ok(readiness)
     }
 
     @DeleteMapping("/{id}/checklist/{itemId}")
     fun removeChecklistItem(
         @PathVariable id: UUID,
-        @PathVariable itemId: String
+        @PathVariable itemId: String,
     ): ResponseEntity<GlobalReadiness> {
         val readiness = readinessService.removeChecklistItem(id, itemId)
         return ResponseEntity.ok(readiness)
     }
 
     @PostMapping("/{id}/launch")
-    fun launchCountry(@PathVariable id: UUID): ResponseEntity<GlobalReadiness> {
+    fun launchCountry(
+        @PathVariable id: UUID,
+    ): ResponseEntity<GlobalReadiness> {
         val readiness = readinessService.launchCountry(id)
         return ResponseEntity.ok(readiness)
     }
@@ -105,18 +116,18 @@ class GlobalReadinessController(
 data class CreateReadinessRequest(
     val companyId: String,
     val country: String,
-    val initialChecklist: List<ReadinessItem> = emptyList()
+    val initialChecklist: List<ReadinessItem> = emptyList(),
 )
 
 data class UpdateChecklistItemRequest(
     val itemId: String,
     val category: ReadinessCategory,
     val description: String,
-    val completed: Boolean
+    val completed: Boolean,
 )
 
 data class AddChecklistItemRequest(
     val itemId: String,
     val category: ReadinessCategory,
-    val description: String
+    val description: String,
 )

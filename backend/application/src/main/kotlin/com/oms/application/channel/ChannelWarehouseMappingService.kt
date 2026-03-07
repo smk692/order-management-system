@@ -17,33 +17,38 @@ import org.springframework.transaction.annotation.Transactional
 class ChannelWarehouseMappingService(
     private val mappingRepository: ChannelWarehouseMappingRepository,
     private val channelRepository: ChannelRepository,
-    private val warehouseRepository: WarehouseRepository
+    private val warehouseRepository: WarehouseRepository,
 ) {
-
     /**
      * Assign a warehouse to a channel
      */
-    fun assignWarehouse(channelId: String, command: AssignWarehouseCommand): MappingResult {
+    fun assignWarehouse(
+        channelId: String,
+        command: AssignWarehouseCommand,
+    ): MappingResult {
         // Verify channel exists
-        val channel = channelRepository.findById(channelId)
-            ?: throw IllegalArgumentException("Channel not found: $channelId")
+        val channel =
+            channelRepository.findById(channelId)
+                ?: throw IllegalArgumentException("Channel not found: $channelId")
 
         // Verify warehouse exists
-        val warehouse = warehouseRepository.findById(command.warehouseId)
-            ?: throw IllegalArgumentException("Warehouse not found: ${command.warehouseId}")
+        val warehouse =
+            warehouseRepository.findById(command.warehouseId)
+                ?: throw IllegalArgumentException("Warehouse not found: ${command.warehouseId}")
 
         // Verify both belong to the same company
         require(channel.companyId == warehouse.companyId) {
             "Channel and warehouse must belong to the same company"
         }
 
-        val mapping = ChannelWarehouseMapping.create(
-            companyId = channel.companyId,
-            channelId = channelId,
-            warehouseId = command.warehouseId,
-            role = command.role,
-            priority = command.priority
-        )
+        val mapping =
+            ChannelWarehouseMapping.create(
+                companyId = channel.companyId,
+                channelId = channelId,
+                warehouseId = command.warehouseId,
+                role = command.role,
+                priority = command.priority,
+            )
 
         val savedMapping = mappingRepository.save(mapping)
         return toMappingResult(savedMapping)
@@ -70,7 +75,10 @@ class ChannelWarehouseMappingService(
     /**
      * Unassign a warehouse from a channel
      */
-    fun unassignWarehouse(channelId: String, warehouseId: String) {
+    fun unassignWarehouse(
+        channelId: String,
+        warehouseId: String,
+    ) {
         mappingRepository.deleteByChannelIdAndWarehouseId(channelId, warehouseId)
     }
 
@@ -81,7 +89,7 @@ class ChannelWarehouseMappingService(
             warehouseId = mapping.warehouseId,
             role = mapping.role,
             priority = mapping.priority,
-            createdAt = mapping.createdAt.toString()
+            createdAt = mapping.createdAt.toString(),
         )
     }
 }

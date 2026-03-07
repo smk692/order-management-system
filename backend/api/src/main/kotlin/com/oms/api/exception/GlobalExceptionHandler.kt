@@ -16,7 +16,6 @@ import java.time.Instant
  */
 @RestControllerAdvice
 class GlobalExceptionHandler {
-
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @ExceptionHandler(EntityNotFoundException::class)
@@ -28,8 +27,8 @@ class GlobalExceptionHandler {
                 ErrorResponse(
                     code = ex.errorCode.code,
                     message = ex.message ?: "Entity not found",
-                    timestamp = Instant.now().toString()
-                )
+                    timestamp = Instant.now().toString(),
+                ),
             )
     }
 
@@ -42,17 +41,18 @@ class GlobalExceptionHandler {
                 ErrorResponse(
                     code = ex.errorCode.code,
                     message = ex.message ?: "Business rule violation",
-                    timestamp = Instant.now().toString()
-                )
+                    timestamp = Instant.now().toString(),
+                ),
             )
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationException(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
-        val errors = ex.bindingResult.allErrors.associate { error ->
-            val fieldName = (error as? FieldError)?.field ?: "unknown"
-            fieldName to (error.defaultMessage ?: "Invalid value")
-        }
+        val errors =
+            ex.bindingResult.allErrors.associate { error ->
+                val fieldName = (error as? FieldError)?.field ?: "unknown"
+                fieldName to (error.defaultMessage ?: "Invalid value")
+            }
 
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
@@ -61,8 +61,8 @@ class GlobalExceptionHandler {
                     code = "VALIDATION_ERROR",
                     message = "Validation failed",
                     timestamp = Instant.now().toString(),
-                    details = errors
-                )
+                    details = errors,
+                ),
             )
     }
 
@@ -75,8 +75,8 @@ class GlobalExceptionHandler {
                 ErrorResponse(
                     code = "INVALID_ARGUMENT",
                     message = ex.message ?: "Invalid argument",
-                    timestamp = Instant.now().toString()
-                )
+                    timestamp = Instant.now().toString(),
+                ),
             )
     }
 
@@ -89,8 +89,8 @@ class GlobalExceptionHandler {
                 ErrorResponse(
                     code = "INTERNAL_ERROR",
                     message = "An unexpected error occurred",
-                    timestamp = Instant.now().toString()
-                )
+                    timestamp = Instant.now().toString(),
+                ),
             )
     }
 }
@@ -102,5 +102,5 @@ data class ErrorResponse(
     val code: String,
     val message: String,
     val timestamp: String,
-    val details: Map<String, String>? = null
+    val details: Map<String, String>? = null,
 )

@@ -16,30 +16,31 @@ import java.util.UUID
 @Service
 @Transactional
 class WarehouseService(
-    private val warehouseRepository: WarehouseRepository
+    private val warehouseRepository: WarehouseRepository,
 ) {
-
     /**
      * Create a new warehouse
      */
     fun createWarehouse(command: CreateWarehouseCommand): WarehouseResult {
-        val address = WarehouseAddress(
-            zipCode = command.zipCode,
-            address1 = command.address1,
-            address2 = command.address2,
-            city = command.city,
-            country = command.country
-        )
+        val address =
+            WarehouseAddress(
+                zipCode = command.zipCode,
+                address1 = command.address1,
+                address2 = command.address2,
+                city = command.city,
+                country = command.country,
+            )
 
-        val warehouse = Warehouse.create(
-            companyId = command.companyId,
-            code = command.code,
-            name = command.name,
-            type = command.type,
-            address = address,
-            region = command.region,
-            capacity = command.capacity
-        )
+        val warehouse =
+            Warehouse.create(
+                companyId = command.companyId,
+                code = command.code,
+                name = command.name,
+                type = command.type,
+                address = address,
+                region = command.region,
+                capacity = command.capacity,
+            )
 
         val savedWarehouse = warehouseRepository.save(warehouse)
         return toWarehouseResult(savedWarehouse)
@@ -50,8 +51,9 @@ class WarehouseService(
      */
     @Transactional(readOnly = true)
     fun getWarehouse(id: String): WarehouseResult {
-        val warehouse = warehouseRepository.findById(id)
-            ?: throw IllegalArgumentException("Warehouse not found: $id")
+        val warehouse =
+            warehouseRepository.findById(id)
+                ?: throw IllegalArgumentException("Warehouse not found: $id")
         return toWarehouseResult(warehouse)
     }
 
@@ -68,7 +70,10 @@ class WarehouseService(
      * Get warehouses by company and region
      */
     @Transactional(readOnly = true)
-    fun getWarehousesByCompanyAndRegion(companyId: UUID, region: String): List<WarehouseResult> {
+    fun getWarehousesByCompanyAndRegion(
+        companyId: UUID,
+        region: String,
+    ): List<WarehouseResult> {
         return warehouseRepository.findByCompanyIdAndRegion(companyId, region)
             .map { toWarehouseResult(it) }
     }
@@ -76,27 +81,35 @@ class WarehouseService(
     /**
      * Update warehouse
      */
-    fun updateWarehouse(id: String, command: UpdateWarehouseCommand): WarehouseResult {
-        val warehouse = warehouseRepository.findById(id)
-            ?: throw IllegalArgumentException("Warehouse not found: $id")
+    fun updateWarehouse(
+        id: String,
+        command: UpdateWarehouseCommand,
+    ): WarehouseResult {
+        val warehouse =
+            warehouseRepository.findById(id)
+                ?: throw IllegalArgumentException("Warehouse not found: $id")
 
         // Update address if any address field is provided
-        val newAddress = if (command.zipCode != null || command.address1 != null ||
-            command.city != null || command.country != null) {
-            WarehouseAddress(
-                zipCode = command.zipCode ?: warehouse.address.zipCode,
-                address1 = command.address1 ?: warehouse.address.address1,
-                address2 = command.address2 ?: warehouse.address.address2,
-                city = command.city ?: warehouse.address.city,
-                country = command.country ?: warehouse.address.country
-            )
-        } else null
+        val newAddress =
+            if (command.zipCode != null || command.address1 != null ||
+                command.city != null || command.country != null
+            ) {
+                WarehouseAddress(
+                    zipCode = command.zipCode ?: warehouse.address.zipCode,
+                    address1 = command.address1 ?: warehouse.address.address1,
+                    address2 = command.address2 ?: warehouse.address.address2,
+                    city = command.city ?: warehouse.address.city,
+                    country = command.country ?: warehouse.address.country,
+                )
+            } else {
+                null
+            }
 
         warehouse.update(
             name = command.name,
             address = newAddress,
             region = command.region,
-            capacity = command.capacity
+            capacity = command.capacity,
         )
 
         val savedWarehouse = warehouseRepository.save(warehouse)
@@ -107,8 +120,9 @@ class WarehouseService(
      * Activate a warehouse
      */
     fun activateWarehouse(id: String): WarehouseResult {
-        val warehouse = warehouseRepository.findById(id)
-            ?: throw IllegalArgumentException("Warehouse not found: $id")
+        val warehouse =
+            warehouseRepository.findById(id)
+                ?: throw IllegalArgumentException("Warehouse not found: $id")
 
         warehouse.activate()
         val savedWarehouse = warehouseRepository.save(warehouse)
@@ -119,8 +133,9 @@ class WarehouseService(
      * Deactivate a warehouse
      */
     fun deactivateWarehouse(id: String): WarehouseResult {
-        val warehouse = warehouseRepository.findById(id)
-            ?: throw IllegalArgumentException("Warehouse not found: $id")
+        val warehouse =
+            warehouseRepository.findById(id)
+                ?: throw IllegalArgumentException("Warehouse not found: $id")
 
         warehouse.deactivate()
         val savedWarehouse = warehouseRepository.save(warehouse)
@@ -131,8 +146,9 @@ class WarehouseService(
      * Set warehouse to maintenance mode
      */
     fun setWarehouseMaintenance(id: String): WarehouseResult {
-        val warehouse = warehouseRepository.findById(id)
-            ?: throw IllegalArgumentException("Warehouse not found: $id")
+        val warehouse =
+            warehouseRepository.findById(id)
+                ?: throw IllegalArgumentException("Warehouse not found: $id")
 
         warehouse.setMaintenance()
         val savedWarehouse = warehouseRepository.save(warehouse)
@@ -142,9 +158,13 @@ class WarehouseService(
     /**
      * Update warehouse stock level
      */
-    fun updateStock(id: String, newStock: Int): WarehouseResult {
-        val warehouse = warehouseRepository.findById(id)
-            ?: throw IllegalArgumentException("Warehouse not found: $id")
+    fun updateStock(
+        id: String,
+        newStock: Int,
+    ): WarehouseResult {
+        val warehouse =
+            warehouseRepository.findById(id)
+                ?: throw IllegalArgumentException("Warehouse not found: $id")
 
         warehouse.updateStock(newStock)
         val savedWarehouse = warehouseRepository.save(warehouse)
@@ -170,7 +190,7 @@ class WarehouseService(
             availableCapacity = warehouse.getAvailableCapacity(),
             utilizationPercentage = warehouse.getUtilizationPercentage(),
             createdAt = warehouse.createdAt.toString(),
-            updatedAt = warehouse.updatedAt.toString()
+            updatedAt = warehouse.updatedAt.toString(),
         )
     }
 }

@@ -17,9 +17,8 @@ import java.util.UUID
 @Service
 @Transactional
 class ChannelService(
-    private val channelRepository: ChannelRepository
+    private val channelRepository: ChannelRepository,
 ) {
-
     /**
      * Create a new channel
      */
@@ -31,20 +30,22 @@ class ChannelService(
             "Channel with name '${command.name}' already exists for this company"
         }
 
-        val credentials = ChannelCredentials(
-            apiKey = command.apiKey,
-            secretKey = command.secretKey,
-            additionalConfig = command.additionalConfig
-        )
+        val credentials =
+            ChannelCredentials(
+                apiKey = command.apiKey,
+                secretKey = command.secretKey,
+                additionalConfig = command.additionalConfig,
+            )
 
-        val channel = Channel.create(
-            companyId = command.companyId,
-            name = command.name,
-            type = command.type,
-            credentials = credentials,
-            apiEndpoint = command.apiEndpoint,
-            description = command.description
-        )
+        val channel =
+            Channel.create(
+                companyId = command.companyId,
+                name = command.name,
+                type = command.type,
+                credentials = credentials,
+                apiEndpoint = command.apiEndpoint,
+                description = command.description,
+            )
 
         val savedChannel = channelRepository.save(channel)
         return toChannelResult(savedChannel)
@@ -55,8 +56,9 @@ class ChannelService(
      */
     @Transactional(readOnly = true)
     fun getChannel(id: String): ChannelResult {
-        val channel = channelRepository.findById(id)
-            ?: throw IllegalArgumentException("Channel not found: $id")
+        val channel =
+            channelRepository.findById(id)
+                ?: throw IllegalArgumentException("Channel not found: $id")
         return toChannelResult(channel)
     }
 
@@ -73,7 +75,10 @@ class ChannelService(
      * Get channels by company and status
      */
     @Transactional(readOnly = true)
-    fun getChannelsByCompanyAndStatus(companyId: UUID, status: ChannelStatus): List<ChannelResult> {
+    fun getChannelsByCompanyAndStatus(
+        companyId: UUID,
+        status: ChannelStatus,
+    ): List<ChannelResult> {
         return channelRepository.findByCompanyIdAndStatus(companyId, status)
             .map { toChannelResult(it) }
     }
@@ -81,24 +86,29 @@ class ChannelService(
     /**
      * Update channel
      */
-    fun updateChannel(id: String, command: UpdateChannelCommand): ChannelResult {
-        val channel = channelRepository.findById(id)
-            ?: throw IllegalArgumentException("Channel not found: $id")
+    fun updateChannel(
+        id: String,
+        command: UpdateChannelCommand,
+    ): ChannelResult {
+        val channel =
+            channelRepository.findById(id)
+                ?: throw IllegalArgumentException("Channel not found: $id")
 
         // Update basic info
         channel.update(
             name = command.name,
             apiEndpoint = command.apiEndpoint,
-            description = command.description
+            description = command.description,
         )
 
         // Update credentials if provided
         if (command.apiKey != null && command.secretKey != null) {
-            val newCredentials = ChannelCredentials(
-                apiKey = command.apiKey,
-                secretKey = command.secretKey,
-                additionalConfig = command.additionalConfig
-            )
+            val newCredentials =
+                ChannelCredentials(
+                    apiKey = command.apiKey,
+                    secretKey = command.secretKey,
+                    additionalConfig = command.additionalConfig,
+                )
             channel.updateCredentials(newCredentials)
         }
 
@@ -110,8 +120,9 @@ class ChannelService(
      * Connect a channel
      */
     fun connectChannel(id: String): ChannelResult {
-        val channel = channelRepository.findById(id)
-            ?: throw IllegalArgumentException("Channel not found: $id")
+        val channel =
+            channelRepository.findById(id)
+                ?: throw IllegalArgumentException("Channel not found: $id")
 
         channel.connect()
         val savedChannel = channelRepository.save(channel)
@@ -122,8 +133,9 @@ class ChannelService(
      * Disconnect a channel
      */
     fun disconnectChannel(id: String): ChannelResult {
-        val channel = channelRepository.findById(id)
-            ?: throw IllegalArgumentException("Channel not found: $id")
+        val channel =
+            channelRepository.findById(id)
+                ?: throw IllegalArgumentException("Channel not found: $id")
 
         channel.disconnect()
         val savedChannel = channelRepository.save(channel)
@@ -140,7 +152,7 @@ class ChannelService(
             apiEndpoint = channel.apiEndpoint,
             description = channel.description,
             createdAt = channel.createdAt.toString(),
-            updatedAt = channel.updatedAt.toString()
+            updatedAt = channel.updatedAt.toString(),
         )
     }
 }

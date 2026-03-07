@@ -17,7 +17,7 @@ data class SettlementResult(
     val paidAt: String?,
     val items: List<SettlementItemResult>,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
 )
 
 data class SettlementItemResult(
@@ -26,5 +26,5 @@ data class SettlementItemResult(
     val orderAmount: BigDecimal,
     val commissionRate: BigDecimal,
     val commissionAmount: BigDecimal,
-    val settlementAmount: BigDecimal
+    val settlementAmount: BigDecimal,
 )

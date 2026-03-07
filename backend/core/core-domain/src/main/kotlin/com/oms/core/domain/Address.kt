@@ -15,7 +15,7 @@ data class Address(
     val address2: String? = null,
     val city: String? = null,
     val state: String? = null,
-    val country: String = "KR"
+    val country: String = "KR",
 ) {
     init {
         require(recipient.isNotBlank()) { "Recipient cannot be blank" }
@@ -41,15 +41,16 @@ data class Address(
             zipCode: String,
             address1: String,
             address2: String? = null,
-            city: String = "서울"
-        ): Address = Address(
-            recipient = recipient,
-            phone = phone,
-            zipCode = zipCode,
-            address1 = address1,
-            address2 = address2,
-            city = city,
-            country = "KR"
-        )
+            city: String = "서울",
+        ): Address =
+            Address(
+                recipient = recipient,
+                phone = phone,
+                zipCode = zipCode,
+                address1 = address1,
+                address2 = address2,
+                city = city,
+                country = "KR",
+            )
     }
 }

@@ -12,7 +12,7 @@ data class CreateClaimCommand(
     val reason: String,
     val priority: ClaimPriority = ClaimPriority.NORMAL,
     val memo: String? = null,
-    val items: List<CreateClaimItemCommand>
+    val items: List<CreateClaimItemCommand>,
 )
 
 data class CreateClaimItemCommand(
@@ -20,15 +20,15 @@ data class CreateClaimItemCommand(
     val productName: String,
     val quantity: Int,
     val unitPrice: BigDecimal,
-    val reason: String? = null
+    val reason: String? = null,
 )
 
 data class CompleteClaimCommand(
-    val refundAmount: BigDecimal
+    val refundAmount: BigDecimal,
 )
 
 data class RejectClaimCommand(
-    val reason: String
+    val reason: String,
 )
 
 data class ClaimResult(
@@ -46,7 +46,7 @@ data class ClaimResult(
     val processedAt: String?,
     val items: List<ClaimItemResult>,
     val createdAt: String,
-    val updatedAt: String
+    val updatedAt: String,
 )
 
 data class ClaimItemResult(
@@ -56,5 +56,5 @@ data class ClaimItemResult(
     val quantity: Int,
     val unitPrice: BigDecimal,
     val totalPrice: BigDecimal,
-    val reason: String?
+    val reason: String?,
 )
