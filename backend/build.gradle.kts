@@ -6,6 +6,8 @@ plugins {
     kotlin("plugin.jpa") apply false
     id("org.springframework.boot") apply false
     id("io.spring.dependency-management") apply false
+    id("io.gitlab.arturbosch.detekt") version "1.23.5"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
 allprojects {
@@ -20,6 +22,8 @@ allprojects {
 subprojects {
     apply(plugin = "kotlin")
     apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "io.gitlab.arturbosch.detekt")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     the<io.spring.gradle.dependencymanagement.dsl.DependencyManagementExtension>().apply {
         imports {
@@ -43,17 +47,49 @@ subprojects {
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
-            jvmTarget = "17"
+            jvmTarget = "21"
         }
     }
 
     tasks.withType<JavaCompile> {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
+        sourceCompatibility = "21"
+        targetCompatibility = "21"
     }
 
     tasks.withType<Test> {
         useJUnitPlatform()
+    }
+
+    // Detekt configuration
+    detekt {
+        buildUponDefaultConfig = true
+        allRules = false
+        config.setFrom(files("${rootProject.projectDir}/detekt-config.yml"))
+    }
+
+    // ktlint configuration
+    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        version.set("1.1.1")
+        enableExperimentalRules.set(false)
+        android.set(false)
+        outputToConsole.set(true)
+        ignoreFailures.set(false)
+        filter {
+            exclude("**/generated/**")
+            include("**/kotlin/**")
+        }
+    }
+
+    // Quality check task
+    tasks.register("qualityCheck") {
+        group = "verification"
+        description = "Runs all code quality checks"
+        dependsOn("detekt", "ktlintCheck")
+    }
+
+    // Make build depend on quality check
+    tasks.named("check") {
+        dependsOn("qualityCheck")
     }
 }
 

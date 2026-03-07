@@ -6,23 +6,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.kotlinModule
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.servlet.config.annotation.CorsRegistry
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 /**
  * Web MVC configuration
+ * Note: CORS configuration is now handled in CorsConfig.kt
  */
 @Configuration
-class WebConfig : WebMvcConfigurer {
-
-    override fun addCorsMappings(registry: CorsRegistry) {
-        registry.addMapping("/api/**")
-            .allowedOriginPatterns("*")
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-            .allowedHeaders("*")
-            .allowCredentials(true)
-            .maxAge(3600)
-    }
+class WebConfig {
 
     @Bean
     fun objectMapper(): ObjectMapper {

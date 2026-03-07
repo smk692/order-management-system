@@ -4,23 +4,21 @@ services:
   # ===================
   # Infrastructure
   # ===================
-  mysql:
-    image: mysql:8.0
-    container_name: oms-mysql
+  postgres:
+    image: postgres:16-alpine
+    container_name: oms-postgres
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-oms}
-      MYSQL_USER: ${MYSQL_USER:-oms}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-oms_password}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-oms_password}
+      POSTGRES_DB: ${POSTGRES_DB:-oms}
+      POSTGRES_USER: ${POSTGRES_USER:-oms}
     ports:
-      - "${MYSQL_PORT:-3306}:3306"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./docker/mysql/init:/docker-entrypoint-initdb.d
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      - postgresql_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "pg_isready -U oms"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -75,16 +73,16 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-oms}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-oms}
-      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-oms_password}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-oms}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-oms}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-oms_password}
       SPRING_DATA_MONGODB_URI: mongodb://${MONGO_USER:-oms}:${MONGO_PASSWORD:-oms_password}@mongodb:27017/${MONGO_DATABASE:-oms}?authSource=admin
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     depends_on:
-      mysql:
+      postgres:
         condition: service_healthy
       mongodb:
         condition: service_healthy
@@ -122,6 +120,6 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_data:
+  postgresql_data:
   mongodb_data:
   redis_data:

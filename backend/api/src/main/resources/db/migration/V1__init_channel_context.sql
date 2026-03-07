@@ -14,13 +14,14 @@ CREATE TABLE channels (
     api_endpoint VARCHAR(500),
     description TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by VARCHAR(100),
-    updated_by VARCHAR(100),
-    INDEX idx_channel_company (company_id),
-    INDEX idx_channel_type (type),
-    INDEX idx_channel_status (status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    updated_by VARCHAR(100)
+);
+
+CREATE INDEX idx_channel_company ON channels(company_id);
+CREATE INDEX idx_channel_type ON channels(type);
+CREATE INDEX idx_channel_status ON channels(status);
 
 -- Warehouses table
 CREATE TABLE warehouses (
@@ -39,15 +40,16 @@ CREATE TABLE warehouses (
     capacity INT NOT NULL,
     current_stock INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by VARCHAR(100),
-    updated_by VARCHAR(100),
-    INDEX idx_warehouse_company (company_id),
-    INDEX idx_warehouse_code (code),
-    INDEX idx_warehouse_type (type),
-    INDEX idx_warehouse_status (status),
-    INDEX idx_warehouse_region (region)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    updated_by VARCHAR(100)
+);
+
+CREATE INDEX idx_warehouse_company ON warehouses(company_id);
+CREATE INDEX idx_warehouse_code ON warehouses(code);
+CREATE INDEX idx_warehouse_type ON warehouses(type);
+CREATE INDEX idx_warehouse_status ON warehouses(status);
+CREATE INDEX idx_warehouse_region ON warehouses(region);
 
 -- Channel-Warehouse Mappings table
 CREATE TABLE channel_warehouse_mappings (
@@ -58,14 +60,15 @@ CREATE TABLE channel_warehouse_mappings (
     role VARCHAR(20) NOT NULL,
     priority INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_by VARCHAR(100),
     updated_by VARCHAR(100),
-    INDEX idx_mapping_company (company_id),
-    INDEX idx_mapping_channel (channel_id),
-    INDEX idx_mapping_warehouse (warehouse_id),
-    INDEX idx_mapping_role (role),
-    UNIQUE KEY uk_channel_warehouse (channel_id, warehouse_id),
+    CONSTRAINT uk_channel_warehouse UNIQUE (channel_id, warehouse_id),
     CONSTRAINT fk_mapping_channel FOREIGN KEY (channel_id) REFERENCES channels(id) ON DELETE CASCADE,
     CONSTRAINT fk_mapping_warehouse FOREIGN KEY (warehouse_id) REFERENCES warehouses(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+);
+
+CREATE INDEX idx_mapping_company ON channel_warehouse_mappings(company_id);
+CREATE INDEX idx_mapping_channel ON channel_warehouse_mappings(channel_id);
+CREATE INDEX idx_mapping_warehouse ON channel_warehouse_mappings(warehouse_id);
+CREATE INDEX idx_mapping_role ON channel_warehouse_mappings(role);

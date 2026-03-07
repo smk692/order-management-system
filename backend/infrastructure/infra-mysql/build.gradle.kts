@@ -22,10 +22,10 @@ dependencies {
     // Spring Data JPA
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
-    // MySQL
-    runtimeOnly("com.mysql:mysql-connector-j")
+    // PostgreSQL
+    runtimeOnly("org.postgresql:postgresql")
 
     // Flyway
     implementation("org.flywaydb:flyway-core")
-    implementation("org.flywaydb:flyway-mysql")
+    implementation("org.flywaydb:flyway-database-postgresql")
 }

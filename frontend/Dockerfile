@@ -3,11 +3,14 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Enable corepack and prepare pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # Copy package files
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # Copy source code
 COPY . .
@@ -17,7 +20,7 @@ ARG VITE_API_URL=http://localhost:8080
 ENV VITE_API_URL=$VITE_API_URL
 
 # Build the application
-RUN npm run build
+RUN pnpm build
 
 # Runtime stage
 FROM nginx:alpine

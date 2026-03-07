@@ -1,0 +1,160 @@
+version: 2
+updates:
+  # Backend (Gradle) dependencies
+  - package-ecosystem: "gradle"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "backend"
+      - "gradle"
+    commit-message:
+      prefix: "chore(backend)"
+      include: "scope"
+    reviewers:
+      - "sonmingi"
+    assignees:
+      - "sonmingi"
+    groups:
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+        update-types:
+          - "minor"
+          - "patch"
+      spring:
+        patterns:
+          - "org.springframework*"
+        update-types:
+          - "minor"
+          - "patch"
+      testing:
+        patterns:
+          - "io.kotest*"
+          - "io.mockk*"
+          - "*test*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Frontend (npm/pnpm) dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "frontend"
+      - "npm"
+    commit-message:
+      prefix: "chore(frontend)"
+      include: "scope"
+    reviewers:
+      - "sonmingi"
+    assignees:
+      - "sonmingi"
+    groups:
+      react:
+        patterns:
+          - "react*"
+          - "@types/react*"
+        update-types:
+          - "minor"
+          - "patch"
+      vite:
+        patterns:
+          - "vite*"
+          - "@vitejs/*"
+        update-types:
+          - "minor"
+          - "patch"
+      typescript:
+        patterns:
+          - "typescript*"
+          - "@typescript-eslint/*"
+        update-types:
+          - "minor"
+          - "patch"
+      testing:
+        patterns:
+          - "vitest*"
+          - "@testing-library/*"
+          - "jsdom"
+        update-types:
+          - "minor"
+          - "patch"
+      linting:
+        patterns:
+          - "eslint*"
+          - "prettier*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "docker"
+      - "backend"
+    commit-message:
+      prefix: "chore(docker)"
+    reviewers:
+      - "sonmingi"
+    assignees:
+      - "sonmingi"
+
+  - package-ecosystem: "docker"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "docker"
+      - "frontend"
+    commit-message:
+      prefix: "chore(docker)"
+    reviewers:
+      - "sonmingi"
+    assignees:
+      - "sonmingi"
+
+  # GitHub Actions dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+      timezone: "Asia/Seoul"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "ci/cd"
+    commit-message:
+      prefix: "chore(ci)"
+    reviewers:
+      - "sonmingi"
+    assignees:
+      - "sonmingi"

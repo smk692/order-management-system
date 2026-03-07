@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cat /Users/sonmingi/.openclaw/workspace/issue-pilot/.repos/order-management-system/backend/package.json 2>&1 | python3 -c \\\"import sys,json; d=json.load(sys.stdin); print('type:', d.get('t...",
+  "error": "Exit code 1\nTraceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n    import sys,json; d=json.load(sys.stdin); print('type:', d.get('type','commonjs')); print('scripts:', list(d.get('scripts',{}).keys()))\n                       ~~~~~~~~~^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.14/3.14.2_1/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/__init__.py\", line 298, in load\n    return loads(fp.read(),\n        cls=cls, object_hook=object_hook,\n        parse_flo...",
+  "timestamp": "2026-03-07T07:22:46.926Z",
+  "retry_count": 4
+}

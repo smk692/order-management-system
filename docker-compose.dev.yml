@@ -7,23 +7,21 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: oms-mysql-dev
+  postgres:
+    image: postgres:16-alpine
+    container_name: oms-postgres-dev
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: oms
-      MYSQL_USER: oms
-      MYSQL_PASSWORD: oms_password
+      POSTGRES_PASSWORD: oms_password
+      POSTGRES_DB: oms
+      POSTGRES_USER: oms
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql_dev_data:/var/lib/mysql
-      - ./docker/mysql/init:/docker-entrypoint-initdb.d
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      - postgresql_dev_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD-SHELL", "pg_isready -U oms"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -61,7 +59,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # Optional: Adminer for MySQL management
+  # Optional: Adminer for PostgreSQL management
   adminer:
     image: adminer:latest
     container_name: oms-adminer-dev
@@ -69,7 +67,7 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      - mysql
+      - postgres
 
   # Optional: Mongo Express for MongoDB management
   mongo-express:
@@ -87,6 +85,6 @@ services:
       - mongodb
 
 volumes:
-  mysql_dev_data:
+  postgresql_dev_data:
   mongodb_dev_data:
   redis_dev_data:
